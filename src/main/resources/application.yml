@@ -1,0 +1,7 @@
+com:
+  hh:
+    jn:
+      blog:
+        name: 姜宁宁
+        title: study spring boot
+        des: ${com.hh.jn.blog.name}正在${com.hh.jn.blog.title}
