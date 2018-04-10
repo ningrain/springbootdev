@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
  * Time: 16:13
  */
 @RestController
+@RequestMapping("/hello")
 public class HelloController {
 
-    @RequestMapping("/hello")
+    @RequestMapping("/sayHello")
     public String sayHello(){
         return "Hello SpringBoot!";
     }
