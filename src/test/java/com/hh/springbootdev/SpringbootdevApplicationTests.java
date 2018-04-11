@@ -13,5 +13,4 @@ public class SpringbootdevApplicationTests {
 	public void contextLoads() {
 	}
 
-
 }
