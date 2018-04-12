@@ -1,12 +1,16 @@
 package com.hh.springbootdev.entity;
 
+import java.io.Serializable;
+
 /**
  * Desc:
  * User: jiangningning
  * Date: 2018/4/11
  * Time: 11:17
  */
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private int id;
 
@@ -51,6 +55,12 @@ public class User {
     }
 
     public User(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public User(int id, String name, int age) {
+        this.id = id;
         this.name = name;
         this.age = age;
     }

@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(User user) {
-        userDao.save(user);
+    public int addUser(User user) {
+        return userDao.save(user);
     }
 }

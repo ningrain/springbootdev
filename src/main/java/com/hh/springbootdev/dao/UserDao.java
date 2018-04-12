@@ -19,5 +19,5 @@ public interface UserDao{
 
     User getById(@Param("id") int id);
 
-    void save(User user);
+    int save(User user);
 }

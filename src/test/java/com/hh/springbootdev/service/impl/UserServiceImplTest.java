@@ -23,6 +23,7 @@ public class UserServiceImplTest extends SpringbootdevApplicationTests {
     }
     @Test
     public void addUser(){
-        userService.addUser(new User("bbb", 14));
+        int id = userService.addUser(new User("bbb", 14));
+        System.out.println(id);
     }
 }

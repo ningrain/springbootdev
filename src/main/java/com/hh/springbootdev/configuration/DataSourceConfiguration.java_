@@ -1,14 +1,13 @@
 package com.hh.springbootdev.configuration;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 
 /**
+ * 已移至CoreConfiguration中
  * Desc: 数据源
  * User: jiangningning
  * Date: 2018/4/11
@@ -17,16 +16,20 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfiguration {
 
-    @Autowired
-    private Environment env;
+    private static DbProperties dbProperties = new DbProperties();
 
     @Bean
-    public DataSource dataSource(){
+    public DbProperties getDbProperties(){
+        return dbProperties;
+    }
+
+    @Bean
+    public DataSource dataSource(DbProperties properties){
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setUrl(env.getProperty("spring.datasource.url"));
-        dataSource.setUsername(env.getProperty("spring.datasource.username"));//用户名
-        dataSource.setPassword(env.getProperty("spring.datasource.password"));//密码
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setUrl(properties.getUrl());
+        dataSource.setUsername(properties.getUsername());//用户名
+        dataSource.setPassword(properties.getPassword());//密码
+        dataSource.setDriverClassName(properties.getDriverClassName());
         dataSource.setInitialSize(2);//初始化时建立物理连接的个数
         dataSource.setMaxActive(20);//最大连接池数量
         dataSource.setMinIdle(0);//最小连接池数量
