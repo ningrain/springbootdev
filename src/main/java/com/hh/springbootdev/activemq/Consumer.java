@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * Date: 2018/4/12
  * Time: 16:38
  */
-@Component
+//@Component
 public class Consumer {
 
     @JmsListener(destination = "msg.p2p.queue1")

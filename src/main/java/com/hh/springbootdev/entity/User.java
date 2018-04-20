@@ -3,7 +3,7 @@ package com.hh.springbootdev.entity;
 import java.io.Serializable;
 
 /**
- * Desc:
+ * Desc: 用户实体
  * User: jiangningning
  * Date: 2018/4/11
  * Time: 11:17

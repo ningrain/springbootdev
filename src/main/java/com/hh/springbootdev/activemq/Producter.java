@@ -13,7 +13,7 @@ import javax.jms.Destination;
  * Date: 2018/4/12
  * Time: 16:34
  */
-@Component
+//@Component
 public class Producter {
 
     @Autowired
