@@ -3,9 +3,16 @@ package com.hh.springbootdev.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh.springbootdev.configuration.RedisProperties;
+import org.apache.poi.hssf.usermodel.*;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Desc:
@@ -134,7 +141,62 @@ public class RedisUtil {
 
 
     public static void main(String[] args) {
+        File file = new File("E:\\" + File.separator + "demo.xls");
+        if (file.exists()) {
+            file.delete();
+        }
+        //第一步创建workbook
+        HSSFWorkbook wb = new HSSFWorkbook();
 
+        //第二步创建sheet
+        HSSFSheet sheet = wb.createSheet("sheet1");
+
+        /*//第三步创建行row:添加表头0行
+        HSSFRow row = sheet.createRow(0);
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);  //居中
+
+
+        //第四步创建单元格
+        HSSFCell cell = row.createCell(0);         //第一个单元格
+        cell.setCellValue("姓名");                  //设定值
+        cell.setCellStyle(style);                   //内容居中
+
+        cell = row.createCell(1);                   //第二个单元格
+        cell.setCellValue("身份证");
+        cell.setCellStyle(style);
+
+        cell = row.createCell(2);                   //第三个单元格
+        cell.setCellValue("错误状态");
+        cell.setCellStyle(style);
+
+        cell = row.createCell(3);                   //第四个单元格
+        cell.setCellValue("错误信息");
+        cell.setCellStyle(style);
+
+        //第五步插入数据
+        List<String> list = Arrays.asList("aaa", "bbb", "ccc");
+        for (int i = 0; i < list.size(); i++) {
+            String str = list.get(i);
+            //创建行
+            row = sheet.createRow(i+1);
+            //创建单元格并且添加数据
+            row.createCell(0).setCellValue(str);
+            row.createCell(1).setCellValue(str);
+            row.createCell(2).setCellValue(str);
+            row.createCell(3).setCellValue(str);
+        }
+*/
+        //第六步将生成excel文件保存到指定路径下
+        try {
+            FileOutputStream fout = new FileOutputStream("E:\\demo.xls");
+            wb.write(fout);
+            fout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Excel文件生成成功...");
     }
 
 }

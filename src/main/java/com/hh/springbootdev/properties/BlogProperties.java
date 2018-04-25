@@ -1,6 +1,7 @@
 package com.hh.springbootdev.properties;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,15 +11,16 @@ import org.springframework.stereotype.Component;
  * Time: 16:32
  */
 @Component
+@ConfigurationProperties(prefix = "com.hh.jn.blog")
 public class BlogProperties {
 
-    @Value("${com.hh.jn.blog.name}")
+    //@Value("${com.hh.jn.blog.name}")
     private String name;
 
-    @Value("${com.hh.jn.blog.title}")
+    //@Value("${com.hh.jn.blog.title}")
     private String title;
 
-    @Value("${com.hh.jn.blog.des}")
+    //@Value("${com.hh.jn.blog.des}")
     private String des;
 
     public String getName() {
@@ -43,5 +45,14 @@ public class BlogProperties {
 
     public void setDes(String des) {
         this.des = des;
+    }
+
+    @Override
+    public String toString() {
+        return "BlogProperties{" +
+                "name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", des='" + des + '\'' +
+                '}';
     }
 }
