@@ -52,7 +52,7 @@ logging:
 #  file: mylog.log
 #  level:
 #    com.*: info
-  config: src/main/resources/logback/logback-dev.xml
+  config: classpath:logback/logback-dev.xml
 mybatis:
   type-aliases-package: com.hh.springbootdev.entity
   mapper-locations: classpath:mapper/*.xml
