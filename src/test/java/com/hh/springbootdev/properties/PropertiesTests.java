@@ -3,7 +3,6 @@ package com.hh.springbootdev.properties;
 import com.hh.springbootdev.SpringbootdevApplicationTests;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.env.Environment;
 
 /**
@@ -23,12 +22,16 @@ public class PropertiesTests extends SpringbootdevApplicationTests {
     private BlogProperties blogProperties;
 
     @Autowired
+    private KafkaProperties kafkaProperties;
+
+    @Autowired
     private Environment env;
 
     @Test
     public void propertiesTest(){
         System.out.println(env.getProperty("spring.datasource.username"));
         System.out.println(blogProperties.getDes());
+        System.out.println(kafkaProperties.getBootstrapServers());
     }
 
 }

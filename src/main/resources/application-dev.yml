@@ -32,6 +32,15 @@ spring:
     password: admin
     pool:
       expiry-timeout:
+  kafka:
+    bootstrap-servers: 111.231.109.105:9092
+    producer:
+      acks: all
+      retries: 0
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 #######################################################################################################
 #     此处配置debug=true，该属性置为true的时候，                                                         #
 # 核心Logger（包含嵌入式容器、hibernate、spring）会输出更多内容，但是你自己应用的日志并不会输出为DEBUG级别。  #
