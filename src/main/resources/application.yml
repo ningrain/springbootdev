@@ -14,8 +14,6 @@ spring:
     enabled: true
     encoding: utf-8
     mode: HTML
-    prefix: classpath:/templates/
-    suffix: .html
 mybatis:
   type-aliases-package: com.hh.springbootdev.entity
   mapper-locations: classpath:mapper/*.xml

@@ -16,7 +16,7 @@ public class RedisTests extends SpringbootdevApplicationTests{
     @Test
     public void test1(){
 
-        //RedisUtil.putBean("user1", new User(1, "aaa", 23));
+        RedisUtil.putBean("user1", new User(1, "aaa", 23));
         System.out.println(RedisUtil.getBean("user1", User.class));
     }
 }

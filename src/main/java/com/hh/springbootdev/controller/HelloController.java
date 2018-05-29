@@ -33,7 +33,7 @@ public class HelloController {
 
     @RequestMapping("/index")
     public String index(ModelMap map){
-        int a = 1/0;
+        //int a = 1/0;
         map.addAttribute("host", "http://www.baidu.com");
         return "index";
     }

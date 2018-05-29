@@ -21,7 +21,7 @@ public class Main {
 
     public static void main(String[] args) {
         Properties prop = new Properties();
-        prop.put("bootstrap.servers", "127.0.0.1:9092");
+        prop.put("bootstrap.servers", "111.231.109.105:9092");
         AdminClient adminClient = AdminClient.create(prop);
         List<NewTopic> topics = new ArrayList<>();
         NewTopic newTopic = new NewTopic("topic-test", 1, (short) 1);
