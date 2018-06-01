@@ -2,8 +2,6 @@ package com.hh.springbootdev.kafka;
 
 import com.hh.springbootdev.SpringbootdevApplicationTests;
 import com.hh.springbootdev.properties.KafkaProperties;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
