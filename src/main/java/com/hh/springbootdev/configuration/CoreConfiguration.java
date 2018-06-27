@@ -1,11 +1,22 @@
 package com.hh.springbootdev.configuration;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import com.hh.springbootdev.entity.CustomizeDS;
 import com.hh.springbootdev.util.RedisUtil;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Desc:
@@ -18,26 +29,26 @@ public class CoreConfiguration {
 
     private static RedisProperties redisProperties = new RedisProperties();
 
-    private static DbProperties dbProperties = new DbProperties();
+    //private static DbProperties dbProperties = new DbProperties();
 
     @Bean
-    public RedisProperties getSupport(){
+    public RedisProperties getSupport() {
         return redisProperties;
     }
 
-    @Bean
-    public DbProperties getDbProperties(){
+    /*@Bean
+    public DbProperties getDbProperties() {
         return dbProperties;
-    }
+    }*/
 
     @Bean
-    public RedisUtil redisUtil(RedisProperties properties){
+    public RedisUtil redisUtil(RedisProperties properties) {
         RedisUtil.init(properties);
         return new RedisUtil();
     }
 
-    @Bean
-    public DataSource dataSource(DbProperties properties){
+    /*@Bean
+    public DataSource dataSource(DbProperties properties) {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(properties.getUrl());
         dataSource.setUsername(properties.getUsername());//用户名
@@ -52,6 +63,49 @@ public class CoreConfiguration {
         dataSource.setTestWhileIdle(true);//建议配置为true，不影响性能，并且保证安全性。
         dataSource.setPoolPreparedStatements(false);//是否缓存preparedStatement，也就是PSCache
         return dataSource;
+    }*/
+
+    @Bean(name = "masterDataSource")
+    @ConfigurationProperties(prefix = "master.datasource")
+    public DataSource masterDataSource() {
+        return DruidDataSourceBuilder.create().build();
     }
 
+    @Bean(name = "clusterDataSource")
+    @ConfigurationProperties(prefix = "cluster.datasource")
+    public DataSource clusterDataSource() {
+        return DruidDataSourceBuilder.create().build();
+    }
+
+    @Primary
+    @Bean(name = "dynamicDataSource")
+    public DataSource dynamicDataSource(@Qualifier("masterDataSource") DataSource masterDataSource,
+                                        @Qualifier("clusterDataSource") DataSource clusterDataSource) {
+        DynamicDataSourceResolver resolver = new DynamicDataSourceResolver();
+        Map<Object, Object> datasources = new HashMap<>();
+        datasources.put(CustomizeDS.MASTER.toString(), masterDataSource);
+        datasources.put(CustomizeDS.CLUSTER.toString(), clusterDataSource);
+        resolver.setTargetDataSources(datasources);
+        resolver.setDefaultTargetDataSource(masterDataSource);
+        resolver.afterPropertiesSet();
+        return resolver;
+    }
+
+    @Primary
+    @Bean(name = "dynamicSqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource,
+                                               @Qualifier("clusterDataSource") DataSource clusterDataSource) throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(this.dynamicDataSource(masterDataSource, clusterDataSource));
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
+        return sqlSessionFactoryBean.getObject();
+    }
+
+    @Bean
+    public MapperScannerConfigurer mapperScannerConfigurer(){
+        MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+        mapperScannerConfigurer.setBasePackage("com.hh.springbootdev.dao");
+        mapperScannerConfigurer.setSqlSessionFactoryBeanName("dynamicSqlSessionFactory");
+        return mapperScannerConfigurer;
+    }
 }
