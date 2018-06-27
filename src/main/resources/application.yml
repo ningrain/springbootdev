@@ -17,5 +17,6 @@ spring:
 mybatis:
   type-aliases-package: com.hh.springbootdev.entity
   mapper-locations: classpath:mapper/*.xml
+  type-handlers-package: com.hh.springbootdev.handler
 logging:
   config: classpath:logback-${spring.profiles.active}.xml

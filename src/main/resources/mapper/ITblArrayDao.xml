@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hh.springbootdev.dao.ITblArrayDao">
+
+    <insert id="save">
+        insert into tbl_array(a, b, c) values
+            <foreach collection="list" separator="," item="item">
+                (#{item.a, javaType=[Ljava.lang.Integer;, jdbcType=ARRAY},
+                 #{item.b, javaType=[[Ljava.lang.String;, jdbcType=ARRAY},
+                 #{item.c, jdbcType=INTEGER}
+                )
+            </foreach>
+    </insert>
+
+    <insert id="save1">
+        insert into tbl_array(a, b, c) values
+            (#{a, javaType=[Ljava.lang.Integer;, jdbcType=ARRAY},
+             #{b, javaType=[[Ljava.lang.String;, jdbcType=ARRAY},
+             #{c, jdbcType=INTEGER}
+            )
+    </insert>
+</mapper>
