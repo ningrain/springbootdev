@@ -10,4 +10,6 @@ public interface UserService {
 
     int addUser(User user);
 
+    User getUserFromClusterById(int id);
+
 }

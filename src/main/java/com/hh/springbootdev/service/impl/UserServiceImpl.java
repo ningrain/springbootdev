@@ -1,6 +1,8 @@
 package com.hh.springbootdev.service.impl;
 
+import com.hh.springbootdev.annotation.TargetDataSource;
 import com.hh.springbootdev.dao.UserDao;
+import com.hh.springbootdev.entity.CustomizeDS;
 import com.hh.springbootdev.entity.User;
 import com.hh.springbootdev.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +33,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public int addUser(User user) {
         return userDao.save(user);
+    }
+
+    @Override
+    @TargetDataSource(CustomizeDS.CLUSTER)
+    public User getUserFromClusterById(int id) {
+        return userDao.getById(id);
     }
 }
