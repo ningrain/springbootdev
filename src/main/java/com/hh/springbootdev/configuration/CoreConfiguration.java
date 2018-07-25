@@ -68,13 +68,26 @@ public class CoreConfiguration {
     @Bean(name = "masterDataSource")
     @ConfigurationProperties(prefix = "master.datasource")
     public DataSource masterDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        return buildDatasource();
     }
 
     @Bean(name = "clusterDataSource")
     @ConfigurationProperties(prefix = "cluster.datasource")
     public DataSource clusterDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        return buildDatasource();
+    }
+
+    private DataSource buildDatasource(){
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setInitialSize(5);
+        dataSource.setMaxActive(20);
+        dataSource.setMinIdle(0);
+        dataSource.setMaxWait(70000L);
+        dataSource.setValidationQuery("SELECT 1");
+        dataSource.setTestOnBorrow(false);
+        dataSource.setTestWhileIdle(true);
+        dataSource.setPoolPreparedStatements(false);
+        return dataSource;
     }
 
     @Primary

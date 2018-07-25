@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * Desc:
  * User: jiangningning
@@ -20,4 +22,6 @@ public interface UserDao{
     User getById(@Param("id") int id);
 
     int save(User user);
+
+    long update(Map<String, Object> params);
 }

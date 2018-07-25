@@ -1,5 +1,7 @@
 package com.hh.springbootdev.controller;
 
+import com.hh.springbootdev.entity.ResultBean;
+import com.hh.springbootdev.entity.User;
 import com.hh.springbootdev.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,13 @@ public class UserController {
     @RequestMapping("/getUser/{id}")
     public String getUserById(@PathVariable int id){
         return userService.getUserById(id).toString();
+    }
+
+    @ResponseBody
+    @RequestMapping("/getUser1/{id}")
+    public ResultBean<User> getUserById1(@PathVariable int id){
+
+        return userService.getUserById1(id);
     }
 
 }

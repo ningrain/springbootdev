@@ -6,7 +6,9 @@ import com.hh.springbootdev.entity.User;
 import com.hh.springbootdev.service.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("dev")
 public class UserServiceImplTest extends SpringbootdevApplicationTests {
 
     @Autowired

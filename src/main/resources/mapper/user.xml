@@ -17,5 +17,8 @@
     <insert id="save" parameterType="com.hh.springbootdev.entity.User">
         insert into user(name, age) values (#{name}, #{age})
     </insert>
+    <update id="update" parameterType="map">
+        UPDATE `user` set name = #{name} where age=#{age}
+    </update>
 
 </mapper>
