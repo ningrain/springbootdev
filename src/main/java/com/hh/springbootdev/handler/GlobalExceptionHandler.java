@@ -1,5 +1,6 @@
 package com.hh.springbootdev.handler;
 
+import com.hh.springbootdev.exception.CustomException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,6 +20,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e){
+        ModelAndView mv = new ModelAndView(DEFAULT_ERROR_VIEW);
+        mv.addObject("exception", e.getMessage());
+        mv.addObject("url", request.getRequestURL());
+        return mv;
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ModelAndView CustomErrorHandler(HttpServletRequest request, Exception e){
         ModelAndView mv = new ModelAndView(DEFAULT_ERROR_VIEW);
         mv.addObject("exception", e.getMessage());
         mv.addObject("url", request.getRequestURL());

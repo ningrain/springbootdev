@@ -1,5 +1,6 @@
 package com.hh.springbootdev.controller;
 
+import com.hh.springbootdev.exception.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,8 @@ public class HelloController {
     public String index(ModelMap map){
         //int a = 1/0;
         map.addAttribute("host", "http://www.baidu.com");
-        return "index";
+        throw new CustomException("抛出自定义异常");
+        // return "index";
     }
 
 }

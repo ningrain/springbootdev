@@ -1,14 +1,19 @@
 package com.hh.springbootdev.util;
 
+import com.alibaba.druid.support.http.util.IPAddress;
+import com.hh.springbootdev.exception.CustomException;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import sun.net.util.IPAddressUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -142,7 +147,83 @@ public class UtilTest {
         /*ipList2.forEach(System.out::println);
         String s = IPUtil.ipStrValidation("34e5:2319:56da:632a:c3d5:9087:b3c3:60e2,34e5:2319:56da:632a:c3d5:9087:b3c3:60e2-34e5:2319:56da:632a:c3d5:9087:b3c3:60f3");
         System.out.println(s);*/
-        System.out.println(InetAddress.getByName("::ffff:192.1.56.10").getAddress().length);
+        // System.out.println(InetAddress.getByName("::ffff:192.1.56.10").getAddress().length);
+        System.out.println(Integer.MAX_VALUE);
+        System.out.println(Long.MAX_VALUE);
+        System.out.println(1531670400 * 3);
+        System.out.println(1531670400 * 3L);
+    }
+
+    @Test
+    public void test9(){
+        System.out.println(IPAddressUtil.isIPv6LiteralAddress("::ffff:192.1.56.10"));
+        System.out.println(IPAddressUtil.isIPv6LiteralAddress("::"));
+        // System.out.println(IPUtil.ipStrValidation("::ffff:192.1.56.10"));
+        // IPAddress ipAddress = new IPAddress("::ffff:192.1.56.10");
+        // System.out.println(ipAddress.getIPAddress());
+        System.out.println(0xff00);
+    }
+
+    @Test
+    public void test10(){
+        // Mythread t1 = ;
+        // Mythread t2 = new Mythread();
+        for (int i = 0; i < 10; i++) {
+            new Thread(new Mythread()).start();
+        }
+    }
+
+
+    class Mythread implements Runnable{
+
+        @Override
+        public void run() {
+            System.out.println(Thread.currentThread().getName() + "-" + new Date().getTime());
+        }
+    }
+
+    @Test
+    public void test11(){
+        System.out.println(IPUtil.ipStrValidation("192.168.0.2-:ffff:192.1.56.10"));
+    }
+
+    @Test
+    public void test12(){
+        try {
+            String s = IPUtil.ipToHex("fe80:0:0:0:0204:61ff:192.0.0.1");
+            System.out.println(s);
+            System.out.println(new BigInteger(s, 16));
+            BigInteger bigInteger = new BigInteger(String.valueOf("338288524927261089654164245680396173313"));
+            System.out.println(bigInteger.toString(16));
+            System.out.println(IPUtil.hexToIP(bigInteger.toString(16)));
+
+
+            String s1 = IPUtil.ipToHex("192.0.0.1");
+            System.out.println(s1);
+
+
+            // System.out.println(IPUtil.ipv6toInt(IPUtil1.byteToIP(IPUtil1.ipToBytes("fe80:0:0:0:0204:61ff:192.0.0.1"))));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test13(){
+        /*String ipStr = "192.48.45.124/24-192.48.45.128/24" +
+                ",fe80:0:0:0:0204:61ff:192.0.0.1/64-fe80:0:0:0:0204:61ff:192.0.1.1,fe80::0204:61ff";
+        System.out.println(IPUtil.ipStrValidation(ipStr));
+        IPUtil.getIpList(ipStr.split(",")).forEach(System.out::println);
+
+        try {
+            System.out.println(IPUtil.hexToIP(Long.toHexString(3224382844L)));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }*/
+        System.out.println(IPUtil.long2ipv4(1018099810L));
+        System.out.println(IPUtil.ipv4toLong("60.174.248.98"));
+        System.out.println(IPUtil.ipv6toInt("fe80:0:0:0:0204:61ff:192.0.0.1"));
+        System.out.println(IPUtil.int2ipv6(new BigInteger("338288524927261089654164245680396173313")));
     }
 
 }

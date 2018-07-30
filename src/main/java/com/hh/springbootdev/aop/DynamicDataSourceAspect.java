@@ -39,9 +39,9 @@ public class DynamicDataSourceAspect {
 
     @After("switchDatasource()")
     public void restoreDataSource(JoinPoint point){
-        MethodSignature ms = (MethodSignature) point.getSignature();
-        String targetDataSource = ms.getMethod().getAnnotation(TargetDataSource.class).value().toString();
-        LOGGER.info("method：{} 执行完毕，还原数据源 DataSource : {}", point.getSignature(), targetDataSource);
+        /*MethodSignature ms = (MethodSignature) point.getSignature();
+        String targetDataSource = ms.getMethod().getAnnotation(TargetDataSource.class).value().toString();*/
+        LOGGER.info("method：{} 执行完毕，还原数据源至默认数据源", point.getSignature());
         DynamicDataSourceContextHolder.clearDataSourceType();
     }
 }
