@@ -29,6 +29,10 @@ public class IPUtil {
     private IPUtil() {
     }
 
+    public static final String IPV4 = "ipv4";
+
+    public static final String IPV6 = "ipv6";
+
     private static final String IPV4PATTERN = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))";
 
     private static final String IPV6PATTERN = "^\\s*((([0-9A-Fa-f]{1,4}:){7}(([0-9A-Fa-f]{1,4})|:))|(([0-9A-Fa-f]{1,4}:){6}(:|((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})|(:[0-9A-Fa-f]{1,4})))|(([0-9A-Fa-f]{1,4}:){5}((:((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){0,1}((:((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){0,2}((:((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:){2}(:[0-9A-Fa-f]{1,4}){0,3}((:((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(([0-9A-Fa-f]{1,4}:)(:[0-9A-Fa-f]{1,4}){0,4}((:((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(:(:[0-9A-Fa-f]{1,4}){0,5}((:((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})?)|((:[0-9A-Fa-f]{1,4}){1,2})))|(((25[0-5]|2[0-4]\\d|[01]?\\d{1,2})(\\.(25[0-5]|2[0-4]\\d|[01]?\\d{1,2})){3})))(%.+)?\\s*$";
@@ -70,6 +74,33 @@ public class IPUtil {
     }
 
     /**
+     * <p>Title:getIpListBetween2Ip</p>
+     * <p>Description: 根据起止ip获取ip集合</p>
+     * @param beginIp 起始ip
+     * @param endIp 结尾ip
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> getIpListBetween2Ip(String beginIp, String endIp) {
+        List<String> ipList;
+        if (beginIp.contains(":")) { // ipv6
+            ipList = getIpv6AddrList(beginIp, endIp);
+        } else { // ipv4
+            ipList = getIpv4AddrList(beginIp, endIp);
+        }
+        return ipList;
+    }
+
+    /**
+     * <p>Title:getIpListByStrIp</p>
+     * <p>Description: 根据ip字符串获取ip集合</p>
+     * @param strIp ip字符串
+     * @return java.util.List<java.lang.String>
+     */
+    public static List<String> getIpListByStrIp(String strIp) {
+        return getIpList(strIp.split(","));
+    }
+
+    /**
      * <p>Title:getIpList</p>
      * <p>Description: 根据传入ip数组获取所有ip(兼容ipv4和ipv6)</p>
      *
@@ -82,12 +113,11 @@ public class IPUtil {
         for (String ip : ips) {
             int index = ip.indexOf("-");
             if (index != -1) { // ip地址段
-                String beginIp = ip.substring(0, index);
-                String endIp = ip.substring(index + 1);
+                String[] ipSec = ip.split("-");
                 if (ip.contains(":")) { // ipv6
-                    tempList = getIpv6AddrList(beginIp, endIp);
+                    tempList = getIpv6AddrList(ipSec[0], ipSec[1]);
                 } else { // ipv4
-                    tempList = getIpv4AddrList(beginIp, endIp);
+                    tempList = getIpv4AddrList(ipSec[0], ipSec[1]);
                 }
                 ipList.addAll(tempList);
             } else { // 单ip
@@ -136,32 +166,60 @@ public class IPUtil {
         return ipAddrList;
     }
 
-    public static String int2ipv6(BigInteger bigIntIp) {
-        try {
-            return hexToIP(bigIntIp.toString(16));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+    public static String int2ipv6(BigInteger big)
+    {
+        StringBuilder str = new StringBuilder();
+        BigInteger ff = BigInteger.valueOf(0xffff);
+        for (int i = 0; i < 8 ; i++)
+        {
+            str.insert(0, big.and(ff).toString(16) + ":");
+
+            big = big.shiftRight(16);
         }
-        return null;
+        //the last :
+        str = new StringBuilder(str.substring(0, str.length() - 1));
+        return str.toString().replaceFirst("(^|:)(0+(:|$)){2,8}", "::");
     }
 
     public static BigInteger ipv6toInt(String strIp) {
         return new BigInteger(ipToHex(strIp), 16);
     }
 
-    public static String long2ipv4(Long longIp) {
-        try {
-            return hexToIP(Long.toHexString(longIp));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static String long2ipv4(long l)
+    {
+        String ip = "";
+        ip = ip + (l >>> 24);
+
+        ip = ip + "." + ((0x00ffffff & l) >>> 16);
+        ip = ip + "." + ((0x0000ffff & l) >>> 8);
+        ip = ip + "." + (0x000000ff & l);
+        return ip;
     }
 
     public static Long ipv4toLong(String beginIp) {
         return Long.parseLong(ipToHex(beginIp), 16);
     }
 
+    public static String ipToDecimal(String ip){
+        return new BigInteger(ipToHex(ip), 16).toString(10);
+    }
+
+    /**
+     * <p>Title:decimalToIp</p>
+     * <p>Description: 十进制字符串转ip</p>
+     * @param decimal 十进制字符串
+     * @param ipType ip类型,取值：IpUtil.IPV4/IpUtil.IPV6
+     * @return java.lang.String
+     */
+    public static String decimalToIp(String decimal,String ipType){
+        String result = null;
+        if (IPV4.equals(ipType)) {
+            result = long2ipv4(Long.parseLong(decimal));
+        } else if (IPV6.equals(ipType)) {
+            result = int2ipv6(new BigInteger(decimal));
+        }
+        return result;
+    }
 
     /**
      * 将字符串形式的ip地址转换为hex形式字符串，支持IPV4和IPV6两个版本
