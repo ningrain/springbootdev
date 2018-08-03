@@ -23,7 +23,7 @@ public class SysRole implements Serializable {
     // 角色--权限 多对多关系
     private List<SysPermission> permissionList;
     // 角色--用户 多对多关系
-    private List<UserInfo> userInfoList;
+    private List<SysUser> sysUserList;
 
     public Long getId() {
         return id;
@@ -65,12 +65,12 @@ public class SysRole implements Serializable {
         this.permissionList = permissionList;
     }
 
-    public List<UserInfo> getUserInfoList() {
-        return userInfoList;
+    public List<SysUser> getSysUserList() {
+        return sysUserList;
     }
 
-    public void setUserInfoList(List<UserInfo> userInfoList) {
-        this.userInfoList = userInfoList;
+    public void setSysUserList(List<SysUser> sysUserList) {
+        this.sysUserList = sysUserList;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SysRole implements Serializable {
                 ", description='" + description + '\'' +
                 ", available=" + available +
                 ", permissionList=" + permissionList +
-                ", userInfoList=" + userInfoList +
+                ", sysUserList=" + sysUserList +
                 '}';
     }
 }

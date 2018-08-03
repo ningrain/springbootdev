@@ -1,6 +1,12 @@
 package com.hh.springbootdev.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -9,7 +15,7 @@ import java.util.List;
  * Date: 2018/4/20
  * Time: 16:36
  */
-public class UserInfo implements Serializable {
+public class SysUser implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -45,6 +51,26 @@ public class UserInfo implements Serializable {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -55,6 +81,16 @@ public class UserInfo implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> auths = new ArrayList<>();
+        List<SysRole> roles = this.getRoleList();
+        for (SysRole role : roles) {
+            auths.add(new SimpleGrantedAuthority(role.getRole()));
+        }
+        return auths;
     }
 
     public String getPassword() {
@@ -96,7 +132,7 @@ public class UserInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "UserInfo{" +
+        return "SysUser{" +
                 "uid=" + uid +
                 ", username='" + username + '\'' +
                 ", name='" + name + '\'' +

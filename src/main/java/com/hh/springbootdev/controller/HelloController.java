@@ -31,13 +31,4 @@ public class HelloController {
         logger.error("日志输出 error");
         return "Hello SpringBoot!";
     }
-
-    @RequestMapping("/index")
-    public String index(ModelMap map){
-        //int a = 1/0;
-        map.addAttribute("host", "http://www.baidu.com");
-        throw new CustomException("抛出自定义异常");
-        // return "index";
-    }
-
 }
