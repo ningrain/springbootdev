@@ -1,7 +1,6 @@
 package com.hh.springbootdev.util;
 
-import com.alibaba.druid.support.http.util.IPAddress;
-import com.hh.springbootdev.exception.CustomException;
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.MapUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +11,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Desc:
@@ -228,6 +226,37 @@ public class UtilTest {
 
     @Test
     public void test14(){
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 1; i < 5; i++) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", "AAAAAAAAAAA" + i);
+            map.put("sort", i);
+            list.add(map);
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", "AAAAAAAAAAA3");
+        sort(list, "sort", params);
+        System.out.println(list);
     }
 
+    private static void sort(List<Map<String, Object>> list, String sortName, Map<String, Object> params) {
+        List<Map<String, Object>> mapList = list.stream().filter(data -> MapUtils.getString(data, "id").equals(MapUtils.getString(params, "id"))).collect(Collectors.toList());
+        list.removeAll(mapList);
+        list.sort((Comparator<Map>) (o1, o2) -> {
+            Long a = MapUtils.getLongValue(o1, sortName);
+            Long b = MapUtils.getLongValue(o2, sortName);
+
+            // 升序
+            // return a.compareTo(b);
+
+            // 降序
+            return b.compareTo(a);
+        });
+        list.addAll(0, mapList);
+    }
+
+    @Test
+    public void test15(){
+        System.out.println(JSON.toJSON(Arrays.asList("aaa", "bbbb")));
+    }
 }
