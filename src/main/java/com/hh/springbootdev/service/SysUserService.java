@@ -13,6 +13,7 @@ package com.hh.springbootdev.service;
 
 import com.hh.springbootdev.entity.SysUser;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +23,8 @@ import java.util.Map;
  */
 public interface SysUserService {
 
-    SysUser findByUsername(Map<String, Object> params);
+    SysUser findByUsername(String username);
+
+    List<SysUser> findAll();
 
 }

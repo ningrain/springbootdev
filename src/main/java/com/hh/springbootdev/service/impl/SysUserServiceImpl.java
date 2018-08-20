@@ -17,6 +17,7 @@ import com.hh.springbootdev.service.SysUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +32,12 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserDao sysUserDao;
 
     @Override
-    public SysUser findByUsername(Map<String, Object> params) {
-        return sysUserDao.findByUsername(params);
+    public SysUser findByUsername(String username) {
+        return sysUserDao.findByUsername(username);
+    }
+
+    @Override
+    public List<SysUser> findAll() {
+        return sysUserDao.findAll();
     }
 }

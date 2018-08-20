@@ -17,8 +17,6 @@ public class SysUserServiceTest extends SpringbootdevApplicationTests {
 
     @Test
     public void findByUsername() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("username", "root");
-        System.out.println(sysUserService.findByUsername(params).toString());
+        System.out.println(sysUserService.findByUsername("root").toString());
     }
 }

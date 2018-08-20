@@ -39,6 +39,15 @@ public class SysUser implements UserDetails, Serializable {
 
     private List<SysRole> roleList;
 
+    public SysUser(long uid, String username, String name, String password, byte state, List<SysRole> roleList) {
+        this.uid = uid;
+        this.username = username;
+        this.name = name;
+        this.password = password;
+        this.state = state;
+        this.roleList = roleList;
+    }
+
     public long getUid() {
         return uid;
     }
@@ -47,6 +56,7 @@ public class SysUser implements UserDetails, Serializable {
         this.uid = uid;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }

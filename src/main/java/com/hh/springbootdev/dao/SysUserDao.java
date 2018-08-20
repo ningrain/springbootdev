@@ -15,6 +15,7 @@ import com.hh.springbootdev.entity.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +27,7 @@ import java.util.Map;
 @Mapper
 public interface SysUserDao {
 
-    SysUser findByUsername(Map<String, Object> params);
+    SysUser findByUsername(String username);
 
+    List<SysUser> findAll();
 }

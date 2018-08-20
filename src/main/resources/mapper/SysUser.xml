@@ -6,4 +6,7 @@
     <select id="findByUsername" resultType="com.hh.springbootdev.entity.SysUser">
         select * from sys_user where username like #{username}
     </select>
+    <select id="findAll" resultType="map">
+        select * from sys_user
+    </select>
 </mapper>
