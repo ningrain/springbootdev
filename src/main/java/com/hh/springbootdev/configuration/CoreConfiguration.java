@@ -27,25 +27,25 @@ import java.util.Map;
 @Configuration
 public class CoreConfiguration {
 
-    private static RedisProperties redisProperties = new RedisProperties();
+    // private static RedisProperties redisProperties = new RedisProperties();
 
     //private static DbProperties dbProperties = new DbProperties();
 
-    @Bean
+    /*@Bean
     public RedisProperties getSupport() {
-        return redisProperties;
-    }
+        return new RedisProperties();
+    }*/
 
     /*@Bean
     public DbProperties getDbProperties() {
         return dbProperties;
     }*/
 
-    @Bean
+    /*@Bean
     public RedisUtil redisUtil(RedisProperties properties) {
         RedisUtil.init(properties);
         return new RedisUtil();
-    }
+    }*/
 
     /*@Bean
     public DataSource dataSource(DbProperties properties) {

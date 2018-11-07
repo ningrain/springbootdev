@@ -4,10 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh.springbootdev.configuration.RedisProperties;
 import org.apache.poi.hssf.usermodel.*;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,15 +28,27 @@ import java.util.List;
  * Date: 2018/4/12
  * Time: 11:06
  */
+@Component
 public class RedisUtil {
+
+    @Resource
+    private RedisProperties propertiesAutoWired;
+
+    private static RedisProperties properties;
 
     private static JedisPool jedisPool;
 
-    public static void init(RedisProperties properties){
-        getJedisPool(properties);
+    @PostConstruct
+    public void init(){
+        properties = propertiesAutoWired;
+        getJedisPool();
     }
 
-    private static void getJedisPool(RedisProperties properties) {
+    /*public static void init(RedisProperties properties){
+        getJedisPool(properties);
+    }*/
+
+    private static void getJedisPool() {
         JedisPoolConfig config = new JedisPoolConfig();
         //连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
         config.setBlockWhenExhausted(true);
@@ -104,6 +124,18 @@ public class RedisUtil {
             close(jedis);
         }
         return ans;
+    }
+
+    public static void remove(String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedis();
+            jedis.del(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(jedis);
+        }
     }
 
     public static void putBean(String key, Object o){

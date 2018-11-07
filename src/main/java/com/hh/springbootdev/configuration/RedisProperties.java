@@ -1,6 +1,7 @@
 package com.hh.springbootdev.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * Desc:
@@ -8,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Date: 2018/4/12
  * Time: 13:00
  */
+@Component
 @ConfigurationProperties(prefix = "support")
 public class RedisProperties {
 
