@@ -206,6 +206,13 @@
             <artifactId>hadoop-core</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.servicemix.bundles</groupId>
+            <artifactId>org.apache.servicemix.bundles.not-yet-commons-ssl</artifactId>
+            <version>0.3.11_1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

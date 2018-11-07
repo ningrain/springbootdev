@@ -2,18 +2,19 @@ package com.hh.springbootdev.util;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.ssl.KeyMaterial;
+import org.apache.commons.ssl.SSLClient;
+import org.apache.commons.ssl.TrustMaterial;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import sun.net.util.IPAddressUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
 import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.security.GeneralSecurityException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -257,6 +258,126 @@ public class UtilTest {
 
     @Test
     public void test15(){
-        System.out.println(JSON.toJSON(Arrays.asList("aaa", "bbbb")));
+        TreeSet<Integer> rtFlowCTimeSet = new TreeSet<>();
+        rtFlowCTimeSet.add(3);
+        rtFlowCTimeSet.add(18);
+        int interval = 2;
+        for (int i = rtFlowCTimeSet.first(); i < rtFlowCTimeSet.last(); i += interval) { // 实时流量填坑
+            rtFlowCTimeSet.add(i);
+        }
+        System.out.println(rtFlowCTimeSet);
     }
+
+    @Test
+    public void test16(){
+        for (int i = 0; i < 40; i++) {
+            long l = (long) (Math.random() * 50000 + 3702259712L);
+            System.out.println(l+"L");
+        }
+        for (int i = 0; i < 40; i++) {
+            long l = (long) (Math.random() * 50000 + 3682598912L);
+            System.out.println(l+"L");
+        }
+        for (int i = 0; i < 40; i++) {
+            long l = (long) (Math.random() * 50000 + 3728736256L);
+            System.out.println(l+"L");
+        }
+        for (int i = 0; i < 40; i++) {
+            long l = (long) (Math.random() * 1000 + 1885601792L);
+            System.out.println(l+"L");
+        }
+    }
+
+    @Test
+    public void test17(){
+        int duration = 181;
+        // 持续时间，单位分钟
+        System.out.println((duration % 60) == 0 ? (duration / 60) : (duration / 60 + 1));
+    }
+
+    @Test
+    public void test18(){
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("aa", 45);
+        map1.put("name", "AA");
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("aa", 40);
+        map2.put("name", "BB");
+        Map<String, Object> map3 = new HashMap<>();
+        map3.put("aa", 50);
+        map3.put("name", "CC");
+        list.add(map1);
+        list.add(map2);
+        list.add(map3);
+
+        list.stream().filter(data -> MapUtils.getString(data, "name").equals("BB")).forEach(data -> {
+            data.put("aa", MapUtils.getIntValue(data, "aa") + 23);
+        });
+        list.forEach(System.out::println);
+    }
+
+    @Test
+    public void test19(){
+        /*int sTime = DateUtil.parse2Int("2018-09-13 09:05:35");
+        int realStartTime = DateUtil.parse2Int("2018-09-13 09:16:35");
+        int realEndTime = DateUtil.parse2Int("2018-09-13 09:23:25");
+        int eTime = DateUtil.parse2Int("2018-09-13 09:35:25");
+        int modelGranularity = 60;
+        int duration = (realEndTime - realStartTime) / 60;
+        int state = 3;*/
+
+        int sTime = DateUtil.parse2Int("2018-09-13 09:01:35");
+        int realStartTime = DateUtil.parse2Int("2018-09-13 09:16:35");
+        int realEndTime = DateUtil.parse2Int("2018-09-13 09:35:25");
+        int eTime = DateUtil.parse2Int("2018-09-13 09:35:25");
+        int modelGranularity = 60;
+        int duration = (realEndTime - realStartTime) / 60;
+        int state = 2;
+
+        TreeSet<Integer> rtFlowCTimeSet = new TreeSet<>();
+        rtFlowCTimeSet.add(DateUtil.parse2Int("2018-09-13 09:13:00"));
+        if (state != 3 || duration >= 30) { // 攻击没有结束 或者 持续时间大于30分钟的事件：需在开始之前补足15分钟
+            if (rtFlowCTimeSet.size() == 0) { // 开始前15分钟内没有查到实时流量 -> 复制基线时间片
+                // rtFlowCTimeSet.addAll(blFlowCTimeSet);
+            } else { // 开始前15分钟内查到实时流量（可能有断点）， 取其中一个(此处取最后一个)，向左右补齐
+                int last = rtFlowCTimeSet.last();
+                for (int i = last; i < realStartTime; i += modelGranularity) { // 从取到的时间点向右补，补至真正开始时间为止
+                    rtFlowCTimeSet.add(i);
+                }
+                for (int i = last; i >= sTime; i -= modelGranularity) { // 从取到的时间点向左补，补至sTime
+                    rtFlowCTimeSet.add(i);
+                }
+            }
+        } else { // 攻击状态已经结束并且持续时间小于30分钟 -> 需要将总时长补齐30分钟
+            if (rtFlowCTimeSet.size() == 0) { // 开始前和结束后都没有查到实时流量 -> 复制基线时间片
+                // rtFlowCTimeSet.addAll(blFlowCTimeSet);
+            } else { // 开始前或结束后内查到实时流量（可能有断点）， 取其中一个(此处取最后一个)，向左右补齐
+                int last = rtFlowCTimeSet.last();
+                for (int i = last; i < eTime; i += modelGranularity) { // 从取到的时间点向右补，补至eTime
+                    if (!(realStartTime < i && i < realEndTime)) { // 过滤掉告警时间段
+                        rtFlowCTimeSet.add(i);
+                    }
+                }
+                for (int i = last; i > sTime; i -= modelGranularity) { // 从取到的时间点向左补，补至sTime
+                    if (!(realStartTime < i && i < realEndTime)) { // 过滤掉告警时间段
+                        rtFlowCTimeSet.add(i);
+                    }
+                }
+            }
+        }
+
+        rtFlowCTimeSet.add(sTime);
+        rtFlowCTimeSet.add(eTime);
+        System.out.println("********************************");
+        rtFlowCTimeSet.forEach(rtFlowCTime -> System.out.println(DateUtil.parse2StrFormat(rtFlowCTime)));
+        System.out.println("********************************");
+    }
+
+    @Test
+    public void test20(){
+        System.out.println(String.format("%.2f", 3.184f));
+        System.out.println(String.format("%.2f", 0.009f));
+    }
+
 }
