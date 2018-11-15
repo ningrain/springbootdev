@@ -30,4 +30,8 @@ public interface SysUserDao {
     SysUser findByUsername(String username);
 
     List<SysUser> findAll();
+
+    void save(SysUser user);
+
+    List<SysUser> selectAllUserWithRole();
 }

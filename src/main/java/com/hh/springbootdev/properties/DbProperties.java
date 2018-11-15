@@ -1,4 +1,4 @@
-package com.hh.springbootdev.configuration;
+package com.hh.springbootdev.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

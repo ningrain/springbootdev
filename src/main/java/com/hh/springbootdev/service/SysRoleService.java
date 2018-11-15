@@ -11,23 +11,18 @@
  */
 package com.hh.springbootdev.service;
 
+import com.hh.springbootdev.entity.SysRole;
 import com.hh.springbootdev.entity.SysUser;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * <p>Title: SysUserService</p>
+ * <p>Title: SysRoleService</p>
  * <p>Description: </p>
  * @author jiangningning
  */
-public interface SysUserService {
+public interface SysRoleService {
 
-    SysUser findByUsername(String username);
+    List<SysRole> getRolesByUserId(long id);
 
-    List<SysUser> findAll();
-
-    void save(SysUser user);
-
-    List<SysUser> selectAllUserWithRole();
 }

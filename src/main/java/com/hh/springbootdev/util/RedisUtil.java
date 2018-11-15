@@ -2,13 +2,9 @@ package com.hh.springbootdev.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hh.springbootdev.configuration.RedisProperties;
-import org.apache.poi.hssf.usermodel.*;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
+import com.hh.springbootdev.properties.RedisProperties;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -19,8 +15,6 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Desc:
@@ -39,7 +33,7 @@ public class RedisUtil {
     private static JedisPool jedisPool;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         properties = propertiesAutoWired;
         getJedisPool();
     }
@@ -88,17 +82,17 @@ public class RedisUtil {
         jedisPool = new JedisPool(config, host, port, timeout, null);
     }
 
-    private static Jedis jedis(){
+    private static Jedis jedis() {
         return jedisPool.getResource();
     }
 
-    private static void close(Jedis jedis){
-        if (jedis != null){
+    private static void close(Jedis jedis) {
+        if (jedis != null) {
             jedis.close();
         }
     }
 
-    public static String get(String key){
+    public static String get(String key) {
         Jedis jedis = null;
         String value = null;
         try {
@@ -112,7 +106,7 @@ public class RedisUtil {
         return value;
     }
 
-    public static String set(String key, String value){
+    public static String set(String key, String value) {
         Jedis jedis = null;
         String ans = null;
         try {
@@ -126,7 +120,7 @@ public class RedisUtil {
         return ans;
     }
 
-    public static void remove(String key){
+    public static void remove(String key) {
         Jedis jedis = null;
         try {
             jedis = jedis();
@@ -138,11 +132,11 @@ public class RedisUtil {
         }
     }
 
-    public static void putBean(String key, Object o){
+    public static void putBean(String key, Object o) {
         set(key, toJsonStr(o));
     }
 
-    public static <T> T getBean(String key, Class<T> cls){
+    public static <T> T getBean(String key, Class<T> cls) {
         String jsonStr = get(key);
         return jsonStr2Obj(jsonStr, cls);
 

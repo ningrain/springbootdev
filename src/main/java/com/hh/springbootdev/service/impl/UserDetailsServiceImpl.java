@@ -11,15 +11,15 @@
  */
 package com.hh.springbootdev.service.impl;
 
+import com.hh.springbootdev.dao.SysRoleDao;
 import com.hh.springbootdev.dao.SysUserDao;
 import com.hh.springbootdev.entity.SysUser;
-import org.apache.commons.collections.MapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 /**
  * <p>Title: UserDetailsServiceImpl</p>
  * <p>Description: </p>
@@ -28,16 +28,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
+    @Resource
     private SysUserDao sysUserDao;
+
+    @Resource
+    private SysRoleDao sysRoleDao;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUser sysUser = sysUserDao.findByUsername(username);
         if (sysUser == null) {
             throw new UsernameNotFoundException(String.format("没有该用户 '%s'.", username));
+        } else {
+            sysUser.setRoleList(sysRoleDao.getRolesByUserId(sysUser.getUserId()));
         }
-        return new SysUser(sysUser.getUid(), sysUser.getUsername(), sysUser.getName(), sysUser.getPassword(),
-                sysUser.getState(), sysUser.getRoleList());
+        return new SysUser(sysUser.getUserId(), sysUser.getUsername(), sysUser.getRealname(), sysUser.getPassword(),
+                sysUser.getUserState(), sysUser.getRoleList());
     }
 }

@@ -2,11 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hh.springbootdev.dao.SysUserDao">
 
+    <resultMap id="userResultMap" type="com.hh.springbootdev.entity.SysUser">
+        <id column="user_id" property="userId" jdbcType="INTEGER" javaType="long"/>
+        <result column="username" property="username" jdbcType="VARCHAR" javaType="String"/>
+        <result column="password" property="password" jdbcType="VARCHAR" javaType="String"/>
+        <result column="realname" property="realname" jdbcType="VARCHAR" javaType="String"/>
+        <result column="user_state" property="userState" jdbcType="INTEGER" javaType="boolean"/>
+        <collection property="roleList" ofType="com.hh.springbootdev.entity.SysRole">
+            <id column="role_id" property="roleId" jdbcType="INTEGER" javaType="long"/>
+            <result column="role_name" property="roleName" jdbcType="VARCHAR" javaType="String"/>
+            <result column="role_desc" property="roleDesc" jdbcType="VARCHAR" javaType="String"/>
+            <result column="role_state" property="roleState" jdbcType="INTEGER" javaType="boolean"/>
+        </collection>
+    </resultMap>
 
     <select id="findByUsername" resultType="com.hh.springbootdev.entity.SysUser">
-        select * from sys_user where username like #{username}
+        select * from sys_user where username like #{username} and user_state = 1
     </select>
-    <select id="findAll" resultType="map">
+    <select id="findAll" resultType="com.hh.springbootdev.entity.SysUser">
         select * from sys_user
+    </select>
+
+    <insert id="save">
+        insert into sys_user(username, password) value (#{username}, #{password})
+    </insert>
+
+    <select id="selectAllUserWithRole" resultMap="userResultMap">
+        select
+            a.*,
+            c.*
+        from
+          sys_user a
+        left join user2role b on a.user_id = b.user_id
+        inner join sys_role c on b.role_id = c.role_id and c.role_state = 1
     </select>
 </mapper>

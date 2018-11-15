@@ -380,4 +380,9 @@ public class UtilTest {
         System.out.println(String.format("%.2f", 0.009f));
     }
 
+    @Test
+    public void test21(){
+        System.out.println(PasswordEncodeUtil.encode("pwd"));
+    }
+
 }

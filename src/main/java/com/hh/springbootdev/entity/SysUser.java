@@ -19,15 +19,13 @@ public class SysUser implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private long uid;
+    private long userId;
 
     private String username;
 
-    private String name;
+    private String realname;
 
     private String password;
-
-    private String salt;
 
     /*
     * 用户状态:
@@ -35,25 +33,28 @@ public class SysUser implements UserDetails, Serializable {
     *   1:正常状态
     *   2:用户被锁定.
     * */
-    private byte state;
+    private boolean userState;
 
     private List<SysRole> roleList;
 
-    public SysUser(long uid, String username, String name, String password, byte state, List<SysRole> roleList) {
-        this.uid = uid;
+    public SysUser(long userId, String username, String realname, String password, boolean userState, List<SysRole> roleList) {
+        this.userId = userId;
         this.username = username;
-        this.name = name;
+        this.realname = realname;
         this.password = password;
-        this.state = state;
+        this.userState = userState;
         this.roleList = roleList;
     }
 
-    public long getUid() {
-        return uid;
+    public SysUser() {
     }
 
-    public void setUid(long uid) {
-        this.uid = uid;
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -85,12 +86,12 @@ public class SysUser implements UserDetails, Serializable {
         this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getRealname() {
+        return realname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class SysUser implements UserDetails, Serializable {
         List<GrantedAuthority> auths = new ArrayList<>();
         List<SysRole> roles = this.getRoleList();
         for (SysRole role : roles) {
-            auths.add(new SimpleGrantedAuthority(role.getRole()));
+            auths.add(new SimpleGrantedAuthority(role.getRoleName()));
         }
         return auths;
     }
@@ -111,20 +112,12 @@ public class SysUser implements UserDetails, Serializable {
         this.password = password;
     }
 
-    public String getSalt() {
-        return salt;
+    public boolean getUserState() {
+        return userState;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public byte getState() {
-        return state;
-    }
-
-    public void setState(byte state) {
-        this.state = state;
+    public void setUserState(boolean userState) {
+        this.userState = userState;
     }
 
     public List<SysRole> getRoleList() {
@@ -135,20 +128,15 @@ public class SysUser implements UserDetails, Serializable {
         this.roleList = roleList;
     }
 
-    // 密码盐
-    public String getCredentialsSalt(){
-        return this.username + this.salt;
-    }
-
     @Override
     public String toString() {
         return "SysUser{" +
-                "uid=" + uid +
+                "userId=" + userId +
                 ", username='" + username + '\'' +
-                ", name='" + name + '\'' +
+                ", realname='" + realname + '\'' +
                 ", password='" + password + '\'' +
-                ", salt='" + salt + '\'' +
-                ", state=" + state +
+                ", userState=" + userState +
+                ", roleList=" + roleList +
                 '}';
     }
 }

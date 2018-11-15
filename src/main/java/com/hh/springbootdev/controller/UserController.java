@@ -13,12 +13,12 @@ package com.hh.springbootdev.controller;
 
 import com.hh.springbootdev.entity.SysUser;
 import com.hh.springbootdev.service.SysUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,13 +28,13 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/user")
-@PreAuthorize("hasRole('USER')")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserController {
 
-    @Autowired
+    @Resource
     private SysUserService sysUserService;
 
-    @PreAuthorize("hasRole('ADMIN')")//有ROLE_ADMIN权限的用户可以访问
+    @PreAuthorize("hasRole('ROLE_ADMIN')")//有ROLE_ADMIN权限的用户可以访问
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
     public List<SysUser> getUsers() {
         return sysUserService.findAll();

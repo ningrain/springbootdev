@@ -11,43 +11,30 @@
  */
 package com.hh.springbootdev.service.impl;
 
+import com.hh.springbootdev.dao.SysRoleDao;
 import com.hh.springbootdev.dao.SysUserDao;
+import com.hh.springbootdev.entity.SysRole;
 import com.hh.springbootdev.entity.SysUser;
+import com.hh.springbootdev.service.SysRoleService;
 import com.hh.springbootdev.service.SysUserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
- * <p>Title: SysUserServiceImpl</p>
+ * <p>Title: SysRoleServiceImpl</p>
  * <p>Description: </p>
  * @author jiangningning
  */
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
-    private SysUserDao sysUserDao;
+    private SysRoleDao sysRoleDao;
 
     @Override
-    public SysUser findByUsername(String username) {
-        return sysUserDao.findByUsername(username);
-    }
-
-    @Override
-    public List<SysUser> findAll() {
-        return sysUserDao.findAll();
-    }
-
-    @Override
-    public void save(SysUser user) {
-        sysUserDao.save(user);
-    }
-
-    @Override
-    public List<SysUser> selectAllUserWithRole() {
-        return sysUserDao.selectAllUserWithRole();
+    public List<SysRole> getRolesByUserId(long id) {
+        return sysRoleDao.getRolesByUserId(id);
     }
 }
