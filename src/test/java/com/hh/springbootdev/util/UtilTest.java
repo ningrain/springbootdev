@@ -1,21 +1,23 @@
 package com.hh.springbootdev.util;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.ssl.KeyMaterial;
-import org.apache.commons.ssl.SSLClient;
-import org.apache.commons.ssl.TrustMaterial;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import sun.net.util.IPAddressUtil;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
-import java.security.GeneralSecurityException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -383,6 +385,113 @@ public class UtilTest {
     @Test
     public void test21(){
         System.out.println(PasswordEncodeUtil.encode("pwd"));
+    }
+
+    @Test
+    public void test22(){
+        List<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("2018-11-19 00:01:19", "AAAA");
+        list.add(map1);
+        Map<String, Object> map3 = new HashMap<>();
+        map3.put("2018-11-19 00:01:21", "CCCC");
+        list.add(map3);
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("2018-11-19 00:01:20", "BBBB");
+        list.add(map2);
+        sort(list);
+        System.out.println(list);
+
+    }
+
+    private void sort(List<Map<String, Object>> list) {
+        list.sort((o1, o2) -> {
+            String s1 = o1.keySet().iterator().next();
+            String s2 = o2.keySet().iterator().next();
+            return s1.compareTo(s2);
+        });
+    }
+
+    @Test
+    public void test23(){
+        System.out.println(Integer.toBinaryString(174));
+    }
+
+    private Set<Integer> assembleTimeSet(int sTime, int realStartTime, int realEndTime, int eTime) {
+        Set<Integer> timeSet = new TreeSet<>();
+        timeSet.add(sTime);
+        timeSet.add(realStartTime);
+        timeSet.add(realEndTime);
+        timeSet.add(eTime);
+        int modelGranularity = 180;
+        for(int i = realStartTime; i > sTime; i -= modelGranularity) {
+            int time = i / modelGranularity * modelGranularity;
+            if(sTime <= time && time <= eTime) {
+                timeSet.add(time);
+            }
+        }
+        for(int i = eTime; i > realEndTime; i -= modelGranularity) {
+            int time = i / modelGranularity * modelGranularity;
+            if(sTime <= time && time <= eTime) {
+                timeSet.add(time);
+            }
+        }
+        return timeSet;
+    }
+
+    @Test
+    public void test24(){
+        int sTime = DateUtil.parse2Int("2018-11-26 13:12:05");
+        int realStartTime = DateUtil.parse2Int("2018-11-26 13:27:05");
+        int realEndTime = DateUtil.parse2Int("2018-11-26 13:35:07");
+        int eTime = DateUtil.parse2Int("2018-11-26 13:50:07");
+        Set<Integer> timeSet = assembleTimeSet(sTime, realStartTime, realEndTime, eTime);
+        timeSet.forEach(time -> System.out.println(DateUtil.parse2StrFormat(time)));
+    }
+
+    @Test
+    public void test25(){
+        Map<String, Long> dataMap = new HashMap<>();
+        dataMap.put("2018-11-29---192.168.0.1", 123456789L);
+        dataMap.put("2018-11-29---192.168.0.2", 123456700L);
+        exportHBaseOriginalData(dataMap);
+    }
+
+    public String exportHBaseOriginalData(Map<String, Long> dataMap) {
+        String exportFileName = "D:/" + File.separator +"aaa.xlsx";
+        try {
+            File exportFile = new File(exportFileName);
+            if (!exportFile.exists()) {
+                exportFile.createNewFile();
+            }
+            // 获取存在的excel文件
+            InputStream inputStream = new FileInputStream(exportFileName);
+            // 定义excel工作簿的引用
+            XSSFWorkbook xs = new XSSFWorkbook(inputStream);
+            // 写入dataList数据到excel
+            //create sheet
+            Sheet sheet = xs.createSheet();
+            //遍历数据集，将其写入excel中
+            AtomicInteger rowIndex = new AtomicInteger();//标识位，用于标识sheet的行号
+            //循环写入主表数据
+            dataMap.forEach((key, value) -> {
+                rowIndex.getAndIncrement();
+                Row row = sheet.createRow(rowIndex.get());
+                //create sheet coluum(单元格)
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue(key);
+                Cell cell1 = row.createCell(1);
+                cell1.setCellValue(value);
+            });
+            System.out.println("主表数据写入完成>>>>>>>>");
+            FileOutputStream fos = new FileOutputStream(exportFileName);
+            xs.write(fos);
+            fos.close();
+            System.out.println(exportFileName + "写入文件成功>>>>>>>>>>>");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return exportFileName;
     }
 
 }
