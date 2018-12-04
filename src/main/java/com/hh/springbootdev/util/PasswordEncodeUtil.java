@@ -16,11 +16,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  * <p>Title: PasswordEncodeUtil</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 public class PasswordEncodeUtil {
 
-    public static String encode(String password){
+    public static String encode(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password.trim());
     }

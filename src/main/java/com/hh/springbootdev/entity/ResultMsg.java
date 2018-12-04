@@ -16,6 +16,7 @@ import lombok.Data;
 /**
  * <p>Title: ResultMsg</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 @Data

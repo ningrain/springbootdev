@@ -1,9 +1,10 @@
-package  com.hh.springbootdev.handler;
+package com.hh.springbootdev.handler;
+
 import org.apache.ibatis.type.*;
 
 import java.sql.*;
 
-@MappedTypes({Integer[].class,String[][].class})
+@MappedTypes({Integer[].class, String[][].class})
 @MappedJdbcTypes({JdbcType.ARRAY})
 public class NewArrayTypeHandler extends BaseTypeHandler<Object[]> {
 

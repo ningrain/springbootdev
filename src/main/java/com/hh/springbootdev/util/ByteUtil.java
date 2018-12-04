@@ -217,8 +217,7 @@ public class ByteUtil {
     /**
      * 以16进制的方式按行打印字节数组
      *
-     * @param bs
-     *            ：要打印的字节数组，lineLength：每行字节数
+     * @param bs ：要打印的字节数组，lineLength：每行字节数
      * @return
      */
     public static String bytesToHexStringLine(byte[] bs, int lineLength) {
@@ -288,7 +287,7 @@ public class ByteUtil {
     // *********************************end*********************************************************
 
     public static void main(String[] args) {
-        byte[] bytes = new byte[] {(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+        byte[] bytes = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
         System.out.println(getLong(bytes));
         System.out.println(getInt(bytes));
     }

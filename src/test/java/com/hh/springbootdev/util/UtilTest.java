@@ -17,6 +17,8 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -494,4 +496,37 @@ public class UtilTest {
         return exportFileName;
     }
 
+    @Test
+    public void test26(){
+
+    }
+
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        for (int i = 0; i < 15; i++) {
+            int finalI = i;
+            executor.execute(() -> {
+                System.out.println(finalI + " start");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // System.out.println(finalI + " end");
+            });
+        }
+        executor.shutdown();
+    }
+
+    static class Person{
+        public void run(){
+            System.out.println("run……");
+        }
+        public void eat(){
+            System.out.println("eat……");
+        }
+        public void talk(){
+            System.out.println("talk……");
+        }
+    }
 }

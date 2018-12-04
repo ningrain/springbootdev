@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.HandshakeInterceptor;
 
 /**
  * Desc:
@@ -23,7 +22,7 @@ public class WebSocketConfig1 implements WebSocketConfigurer {
     }
 
     @Bean
-    public SystemWebSocketHandler systemWebSocketHandler(){
+    public SystemWebSocketHandler systemWebSocketHandler() {
         return new SystemWebSocketHandler();
     }
 

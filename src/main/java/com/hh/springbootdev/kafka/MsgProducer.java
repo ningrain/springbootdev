@@ -48,7 +48,7 @@ public class MsgProducer {
 
 }
 
-class MyThread implements Runnable{
+class MyThread implements Runnable {
 
     @Override
     public void run() {
@@ -61,7 +61,7 @@ class MyThread implements Runnable{
             e.printStackTrace();
         }
         String currentStringTimeMillis = String.valueOf(System.currentTimeMillis());
-        MsgProducer.sendMsg2Kafka(producer, "topic1",currentStringTimeMillis,
+        MsgProducer.sendMsg2Kafka(producer, "topic1", currentStringTimeMillis,
                 Thread.currentThread().getName() + " -> Topic1's msg ---->>" + currentStringTimeMillis);
     }
 

@@ -14,6 +14,7 @@ package com.hh.springbootdev.exception;
 /**
  * <p>Title: CustomException</p>
  * <p>Description: 自定义异常</p>
+ *
  * @author jiangningning
  */
 public class CustomException extends RuntimeException {

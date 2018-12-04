@@ -26,11 +26,12 @@ import java.util.Map;
 /**
  * <p>Title: ExcelUtil</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 public class ExcelUtil {
 
-    public static String exportExcel(String fileName, String[] headers, List<Map<String, Object>> dataMap){
+    public static String exportExcel(String fileName, String[] headers, List<Map<String, Object>> dataMap) {
 
         try {
             SXSSFWorkbook workbook = new SXSSFWorkbook();
@@ -43,7 +44,7 @@ public class ExcelUtil {
             }
             for (int i = 0; i < dataMap.size(); i++) {
                 Map<String, Object> data = dataMap.get(i);
-                Row row1 = sheet.createRow(i+1);
+                Row row1 = sheet.createRow(i + 1);
                 for (int j = 0; j < headers.length; j++) {
                     Cell cell = row1.createCell(j);
                     cell.setCellValue(data.get(headers[j]).toString());

@@ -14,11 +14,11 @@ package com.hh.springbootdev.service;
 import com.hh.springbootdev.entity.SysUser;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>Title: SysUserService</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 public interface SysUserService {

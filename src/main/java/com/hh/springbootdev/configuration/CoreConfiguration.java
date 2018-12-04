@@ -1,9 +1,7 @@
 package com.hh.springbootdev.configuration;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.hh.springbootdev.entity.CustomizeDS;
-import com.hh.springbootdev.util.RedisUtil;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -77,7 +75,7 @@ public class CoreConfiguration {
         return buildDatasource();
     }
 
-    private DataSource buildDatasource(){
+    private DataSource buildDatasource() {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setInitialSize(5);
         dataSource.setMaxActive(20);
@@ -104,18 +102,26 @@ public class CoreConfiguration {
         return resolver;
     }
 
+    @Bean(name = "mybatisConfiguration")
+    @ConfigurationProperties(prefix = "mybatis.configuration")
+    public org.apache.ibatis.session.Configuration mybatisConfiguration() {
+        return new org.apache.ibatis.session.Configuration();
+    }
+
     @Primary
     @Bean(name = "dynamicSqlSessionFactory")
     public SqlSessionFactory sqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource,
-                                               @Qualifier("clusterDataSource") DataSource clusterDataSource) throws Exception {
+                                               @Qualifier("clusterDataSource") DataSource clusterDataSource,
+                                               @Qualifier("mybatisConfiguration") org.apache.ibatis.session.Configuration config) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setDataSource(this.dynamicDataSource(masterDataSource, clusterDataSource));
         sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));
+        sqlSessionFactoryBean.setConfiguration(config);
         return sqlSessionFactoryBean.getObject();
     }
 
     @Bean
-    public MapperScannerConfigurer mapperScannerConfigurer(){
+    public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setBasePackage("com.hh.springbootdev.dao");
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("dynamicSqlSessionFactory");

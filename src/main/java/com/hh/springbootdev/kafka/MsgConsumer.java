@@ -30,13 +30,13 @@ public class MsgConsumer {
         props.put("enable.auto.commit", "false");
         //一次从kafka中poll出来的数据条数
         //max.poll.records条数据需要在在session.timeout.ms这个时间内处理完
-        props.put("max.poll.records","100");
+        props.put("max.poll.records", "100");
         props.put("session.timeout.ms", "100000");
         props.put("request.timeout.ms", "120000");
         return new KafkaConsumer<>(props);
     }
 
-    public static void consumeMsg(KafkaConsumer<Object, Object> consumer){
+    public static void consumeMsg(KafkaConsumer<Object, Object> consumer) {
         while (true) {
             ConsumerRecords<Object, Object> records = consumer.poll(1000);
             for (ConsumerRecord<Object, Object> record : records) {

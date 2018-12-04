@@ -4,7 +4,6 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ import java.util.Map;
 public class ShiroConfiguration {
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager){
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         System.out.println("ShiroFilterFactoryBean.shiroFilterFactoryBean()");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 设置SecurityManager
@@ -35,7 +34,7 @@ public class ShiroConfiguration {
     }
 
     @Bean
-    public SecurityManager securityManager(){
+    public SecurityManager securityManager() {
         return new DefaultWebSecurityManager();
     }
 

@@ -11,7 +11,6 @@
  */
 package com.hh.springbootdev.controller;
 
-import com.hh.springbootdev.entity.SysUser;
 import com.hh.springbootdev.service.SysUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Title: UserController</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 @RestController
@@ -36,8 +37,10 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")//有ROLE_ADMIN权限的用户可以访问
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)
-    public List<SysUser> getUsers() {
-        return sysUserService.findAll();
+    public Map<String, Object> getUsers() {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("list", sysUserService.selectAllUserWithRole());
+        return resultMap;
     }
 
 }

@@ -37,8 +37,8 @@ public class SrcMsg {
 }
 
 
-class Test{
-    public static void parse2Array(){
+class Test {
+    public static void parse2Array() {
         SrcMsg srcMsg1 = new SrcMsg("192.168.0.1", 80);
         SrcMsg srcMsg2 = new SrcMsg("192.168.0.1", 81);
         SrcMsg srcMsg3 = new SrcMsg("192.168.0.1", 82);
@@ -83,7 +83,7 @@ class Test{
                     portSet.add(srcMsg.getPort());
                 }
             });
-            if (portMaxCount < portSet.size()){
+            if (portMaxCount < portSet.size()) {
                 portMaxCount = portSet.size();
             }
         }
@@ -100,11 +100,9 @@ class Test{
         }
 
         // 打印二维数组
-        for(int i=0;i<ipSets.size();i++)
-        {
-            for(int j=0;j<portMaxCount;j++)
-            {
-                System.out.print(ports[i][j]+" ");
+        for (int i = 0; i < ipSets.size(); i++) {
+            for (int j = 0; j < portMaxCount; j++) {
+                System.out.print(ports[i][j] + " ");
             }
             System.out.println("\n");
         }

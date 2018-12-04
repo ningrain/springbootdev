@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
  */
 class ProducerTest {
 
-    public static void sendMsgtoKafka(String topic, String msg){
+    public static void sendMsgtoKafka(String topic, String msg) {
         Properties props = new Properties();
         props.put("bootstrap.servers", "111.231.109.105:9092");
         props.put("acks", "all");
@@ -37,7 +37,7 @@ class ProducerTest {
         producer.close();
     }
 
-    public static String createTopic(String topic){
+    public static String createTopic(String topic) {
         Properties prop = new Properties();
         prop.put("bootstrap.servers", "111.231.109.105:9092");
         AdminClient adminClient = AdminClient.create(prop);
@@ -57,7 +57,7 @@ class ProducerTest {
 
 }
 
-class Thread1 implements Runnable{
+class Thread1 implements Runnable {
     @Override
     public void run() {
         try {
@@ -71,7 +71,7 @@ class Thread1 implements Runnable{
     }
 }
 
-class Main{
+class Main {
     public static void main(String[] args) {
         /*ProducerTest producerTest = new ProducerTest();
         producerTest.createTopic("topic1");*/

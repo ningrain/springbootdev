@@ -16,11 +16,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>Title: SysUserDao</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 @Component

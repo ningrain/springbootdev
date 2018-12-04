@@ -21,10 +21,10 @@ public class SysPermission implements Serializable {
     // 资源路径
     private String url;
     /*
-    * 权限字符串
-    *   menu例子：role:*
-    *   button例子：role:create,role:update,role:delete,role:view
-    * */
+     * 权限字符串
+     *   menu例子：role:*
+     *   button例子：role:create,role:update,role:delete,role:view
+     * */
     private String permission;
     // 父编号
     private Long parentId;

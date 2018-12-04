@@ -12,13 +12,13 @@
 package com.hh.springbootdev.service;
 
 import com.hh.springbootdev.entity.SysRole;
-import com.hh.springbootdev.entity.SysUser;
 
 import java.util.List;
 
 /**
  * <p>Title: SysRoleService</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 public interface SysRoleService {

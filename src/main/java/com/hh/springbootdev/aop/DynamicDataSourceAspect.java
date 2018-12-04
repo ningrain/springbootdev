@@ -27,10 +27,11 @@ public class DynamicDataSourceAspect {
     private static final Logger LOGGER = LoggerFactory.getLogger(DynamicDataSourceAspect.class);
 
     @Pointcut("@annotation(com.hh.springbootdev.annotation.TargetDataSource)")
-    public void switchDatasource(){}
+    public void switchDatasource() {
+    }
 
     @Before("switchDatasource()")
-    public void changeDataSource(JoinPoint point){
+    public void changeDataSource(JoinPoint point) {
         MethodSignature ms = (MethodSignature) point.getSignature();
         String targetDataSource = ms.getMethod().getAnnotation(TargetDataSource.class).value().toString();
         LOGGER.info("method：{} 使用数据源 : {}", point.getSignature(), targetDataSource);
@@ -38,7 +39,7 @@ public class DynamicDataSourceAspect {
     }
 
     @After("switchDatasource()")
-    public void restoreDataSource(JoinPoint point){
+    public void restoreDataSource(JoinPoint point) {
         /*MethodSignature ms = (MethodSignature) point.getSignature();
         String targetDataSource = ms.getMethod().getAnnotation(TargetDataSource.class).value().toString();*/
         LOGGER.info("method：{} 执行完毕，还原数据源至默认数据源", point.getSignature());

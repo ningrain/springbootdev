@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     private static final String DEFAULT_ERROR_VIEW = "error";
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e){
+    public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
         ModelAndView mv = new ModelAndView(DEFAULT_ERROR_VIEW);
         mv.addObject("exception", e.getMessage());
         mv.addObject("url", request.getRequestURL());
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomException.class)
-    public ModelAndView CustomErrorHandler(HttpServletRequest request, Exception e){
+    public ModelAndView CustomErrorHandler(HttpServletRequest request, Exception e) {
         ModelAndView mv = new ModelAndView(DEFAULT_ERROR_VIEW);
         mv.addObject("exception", e.getMessage());
         mv.addObject("url", request.getRequestURL());

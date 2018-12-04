@@ -26,5 +26,5 @@ public interface ITblArrayDao {
 
     int save1(Map map);
 
-    int save2(@Param("a") int[] a,@Param("b") String[][] b, @Param("c") int c);
+    int save2(@Param("a") int[] a, @Param("b") String[][] b, @Param("c") int c);
 }

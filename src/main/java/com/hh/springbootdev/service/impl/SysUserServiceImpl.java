@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>Title: SysUserServiceImpl</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 @Service

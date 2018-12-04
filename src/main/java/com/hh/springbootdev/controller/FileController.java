@@ -23,7 +23,7 @@ public class FileController {
 
     @ResponseBody
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public Map upload(@RequestParam("file")MultipartFile file, HttpServletRequest request){
+    public Map upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         System.out.println(request.getHeader("Content-Type"));
         System.out.println("+++++++++++++++++++++++");
         Map<String, String> result = new HashMap();

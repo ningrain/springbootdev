@@ -76,8 +76,9 @@ public class IPUtil {
     /**
      * <p>Title:getIpListBetween2Ip</p>
      * <p>Description: 根据起止ip获取ip集合</p>
+     *
      * @param beginIp 起始ip
-     * @param endIp 结尾ip
+     * @param endIp   结尾ip
      * @return java.util.List<java.lang.String>
      */
     public static List<String> getIpListBetween2Ip(String beginIp, String endIp) {
@@ -93,6 +94,7 @@ public class IPUtil {
     /**
      * <p>Title:getIpListByStrIp</p>
      * <p>Description: 根据ip字符串获取ip集合</p>
+     *
      * @param strIp ip字符串
      * @return java.util.List<java.lang.String>
      */
@@ -134,7 +136,7 @@ public class IPUtil {
      * 根据起始IP和终止IP获取IPv4地址列表
      *
      * @param beginIp 起始ip
-     * @param endIp 结尾ip
+     * @param endIp   结尾ip
      * @return iplist
      */
     private static List<String> getIpv4AddrList(String beginIp, String endIp) {
@@ -152,7 +154,7 @@ public class IPUtil {
      * 根据起始IP和终止IP获取IPv6地址列表
      *
      * @param beginIp 起始ip
-     * @param endIp 结尾ip
+     * @param endIp   结尾ip
      * @return iplist
      */
     private static List<String> getIpv6AddrList(String beginIp, String endIp) {
@@ -166,12 +168,10 @@ public class IPUtil {
         return ipAddrList;
     }
 
-    public static String int2ipv6(BigInteger big)
-    {
+    public static String int2ipv6(BigInteger big) {
         StringBuilder str = new StringBuilder();
         BigInteger ff = BigInteger.valueOf(0xffff);
-        for (int i = 0; i < 8 ; i++)
-        {
+        for (int i = 0; i < 8; i++) {
             str.insert(0, big.and(ff).toString(16) + ":");
 
             big = big.shiftRight(16);
@@ -185,8 +185,7 @@ public class IPUtil {
         return new BigInteger(ipToHex(strIp), 16);
     }
 
-    public static String long2ipv4(long l)
-    {
+    public static String long2ipv4(long l) {
         String ip = "";
         ip = ip + (l >>> 24);
 
@@ -200,18 +199,19 @@ public class IPUtil {
         return Long.parseLong(ipToHex(beginIp), 16);
     }
 
-    public static String ipToDecimal(String ip){
+    public static String ipToDecimal(String ip) {
         return new BigInteger(ipToHex(ip), 16).toString(10);
     }
 
     /**
      * <p>Title:decimalToIp</p>
      * <p>Description: 十进制字符串转ip</p>
+     *
      * @param decimal 十进制字符串
-     * @param ipType ip类型,取值：IpUtil.IPV4/IpUtil.IPV6
+     * @param ipType  ip类型,取值：IpUtil.IPV4/IpUtil.IPV6
      * @return java.lang.String
      */
-    public static String decimalToIp(String decimal,String ipType){
+    public static String decimalToIp(String decimal, String ipType) {
         String result = null;
         if (IPV4.equals(ipType)) {
             result = long2ipv4(Long.parseLong(decimal));

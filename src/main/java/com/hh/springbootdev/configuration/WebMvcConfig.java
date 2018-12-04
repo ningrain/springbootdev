@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * <p>Title: WebMvcConfig</p>
  * <p>Description: </p>
+ *
  * @author jiangningning
  */
 @Configuration

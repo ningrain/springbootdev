@@ -6,12 +6,7 @@ import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 public class SysUserServiceTest extends SpringbootdevApplicationTests {
 

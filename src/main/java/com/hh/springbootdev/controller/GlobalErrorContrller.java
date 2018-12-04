@@ -21,7 +21,7 @@ public class GlobalErrorContrller implements ErrorController {
     }
 
     @RequestMapping(ERROR_PATH)
-    public String handleError(){
+    public String handleError() {
         return "404";
     }
 }
