@@ -2,14 +2,11 @@ package com.hh.springbootdev.service;
 
 import com.hh.springbootdev.SpringbootdevApplicationTests;
 import org.junit.Test;
-
-import javax.annotation.Resource;
-
-import static org.junit.Assert.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SysRoleServiceTest extends SpringbootdevApplicationTests {
 
-    @Resource
+    @Autowired
     private SysRoleService sysRoleService;
 
     @Test

@@ -3,14 +3,14 @@ package com.hh.springbootdev.service;
 import com.hh.springbootdev.SpringbootdevApplicationTests;
 import com.hh.springbootdev.entity.SysUser;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 public class SysUserServiceTest extends SpringbootdevApplicationTests {
 
-    @Resource
+    @Autowired
     private SysUserService sysUserService;
 
     @Test

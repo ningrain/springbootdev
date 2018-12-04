@@ -6,8 +6,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.*;
-
 public class MsgProducerTest extends SpringbootdevApplicationTests {
 
     @Autowired

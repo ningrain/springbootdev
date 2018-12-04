@@ -12,12 +12,12 @@
 package com.hh.springbootdev.controller;
 
 import com.hh.springbootdev.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +32,12 @@ import java.util.Map;
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class UserController {
 
-    @Resource
-    private SysUserService sysUserService;
+    private final SysUserService sysUserService;
+
+    @Autowired
+    public UserController(SysUserService sysUserService) {
+        this.sysUserService = sysUserService;
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")//有ROLE_ADMIN权限的用户可以访问
     @RequestMapping(value = "/findAll", method = RequestMethod.GET)

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh.springbootdev.properties.RedisProperties;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,24 +25,21 @@ import java.io.IOException;
 @Component
 public class RedisUtil {
 
-    @Resource
-    private RedisProperties propertiesAutoWired;
-
-    private static RedisProperties properties;
+    private final RedisProperties properties;
 
     private static JedisPool jedisPool;
 
-    @PostConstruct
-    public void init() {
-        properties = propertiesAutoWired;
-        getJedisPool();
+    @Autowired
+    public RedisUtil(RedisProperties properties) {
+        this.properties = properties;
     }
 
-    /*public static void init(RedisProperties properties){
+    @PostConstruct
+    public void init() {
         getJedisPool(properties);
-    }*/
+    }
 
-    private static void getJedisPool() {
+    private void getJedisPool(RedisProperties properties) {
         JedisPoolConfig config = new JedisPoolConfig();
         //连接耗尽时是否阻塞, false报异常,ture阻塞直到超时, 默认true
         config.setBlockWhenExhausted(true);
@@ -77,9 +74,9 @@ public class RedisUtil {
         //GenericObjectPoolConfig poolConfig, String host, int port, int timeout, String password
         String host = properties.getRedishost();
         int port = properties.getRedisport();
-        //String password = support.getRedispassword();
+        String password = properties.getRedispassword();
         int timeout = 5000;
-        jedisPool = new JedisPool(config, host, port, timeout, null);
+        jedisPool = new JedisPool(config, host, port, timeout, password);
     }
 
     private static Jedis jedis() {
@@ -163,66 +160,6 @@ public class RedisUtil {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    public static void main(String[] args) {
-        File file = new File("E:\\" + File.separator + "demo.xls");
-        if (file.exists()) {
-            file.delete();
-        }
-        //第一步创建workbook
-        HSSFWorkbook wb = new HSSFWorkbook();
-
-        //第二步创建sheet
-        HSSFSheet sheet = wb.createSheet("sheet1");
-
-        /*//第三步创建行row:添加表头0行
-        HSSFRow row = sheet.createRow(0);
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);  //居中
-
-
-        //第四步创建单元格
-        HSSFCell cell = row.createCell(0);         //第一个单元格
-        cell.setCellValue("姓名");                  //设定值
-        cell.setCellStyle(style);                   //内容居中
-
-        cell = row.createCell(1);                   //第二个单元格
-        cell.setCellValue("身份证");
-        cell.setCellStyle(style);
-
-        cell = row.createCell(2);                   //第三个单元格
-        cell.setCellValue("错误状态");
-        cell.setCellStyle(style);
-
-        cell = row.createCell(3);                   //第四个单元格
-        cell.setCellValue("错误信息");
-        cell.setCellStyle(style);
-
-        //第五步插入数据
-        List<String> list = Arrays.asList("aaa", "bbb", "ccc");
-        for (int i = 0; i < list.size(); i++) {
-            String str = list.get(i);
-            //创建行
-            row = sheet.createRow(i+1);
-            //创建单元格并且添加数据
-            row.createCell(0).setCellValue(str);
-            row.createCell(1).setCellValue(str);
-            row.createCell(2).setCellValue(str);
-            row.createCell(3).setCellValue(str);
-        }
-*/
-        //第六步将生成excel文件保存到指定路径下
-        try {
-            FileOutputStream fout = new FileOutputStream("E:\\demo.xls");
-            wb.write(fout);
-            fout.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Excel文件生成成功...");
     }
 
 }

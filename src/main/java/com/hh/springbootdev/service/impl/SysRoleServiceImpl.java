@@ -14,9 +14,9 @@ package com.hh.springbootdev.service.impl;
 import com.hh.springbootdev.dao.SysRoleDao;
 import com.hh.springbootdev.entity.SysRole;
 import com.hh.springbootdev.service.SysRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,8 +28,12 @@ import java.util.List;
 @Service
 public class SysRoleServiceImpl implements SysRoleService {
 
-    @Resource
-    private SysRoleDao sysRoleDao;
+    private final SysRoleDao sysRoleDao;
+
+    @Autowired
+    public SysRoleServiceImpl(SysRoleDao sysRoleDao) {
+        this.sysRoleDao = sysRoleDao;
+    }
 
     @Override
     public List<SysRole> getRolesByUserId(long id) {

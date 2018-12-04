@@ -14,9 +14,9 @@ package com.hh.springbootdev.service.impl;
 import com.hh.springbootdev.dao.SysUserDao;
 import com.hh.springbootdev.entity.SysUser;
 import com.hh.springbootdev.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,8 +28,12 @@ import java.util.List;
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
-    @Resource
-    private SysUserDao sysUserDao;
+    private final SysUserDao sysUserDao;
+
+    @Autowired
+    public SysUserServiceImpl(SysUserDao sysUserDao) {
+        this.sysUserDao = sysUserDao;
+    }
 
     @Override
     public SysUser findByUsername(String username) {

@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
-
 public class MsgConsumerTest extends SpringbootdevApplicationTests {
 
     @Autowired

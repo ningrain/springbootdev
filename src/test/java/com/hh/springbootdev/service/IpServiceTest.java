@@ -2,17 +2,14 @@ package com.hh.springbootdev.service;
 
 import com.hh.springbootdev.SpringbootdevApplicationTests;
 import org.junit.Test;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 public class IpServiceTest extends SpringbootdevApplicationTests {
 
-    @Resource
+    @Autowired
     private IpService ipService;
 
     @Test

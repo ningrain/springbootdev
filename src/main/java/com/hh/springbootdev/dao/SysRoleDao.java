@@ -13,6 +13,7 @@ package com.hh.springbootdev.dao;
 
 import com.hh.springbootdev.entity.SysRole;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import java.util.List;
  *
  * @author jiangningning
  */
+@Component
 @Mapper
 public interface SysRoleDao {
 

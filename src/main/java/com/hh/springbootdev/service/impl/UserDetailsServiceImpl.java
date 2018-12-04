@@ -14,12 +14,11 @@ package com.hh.springbootdev.service.impl;
 import com.hh.springbootdev.dao.SysRoleDao;
 import com.hh.springbootdev.dao.SysUserDao;
 import com.hh.springbootdev.entity.SysUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * <p>Title: UserDetailsServiceImpl</p>
@@ -30,11 +29,15 @@ import javax.annotation.Resource;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Resource
-    private SysUserDao sysUserDao;
+    private final SysUserDao sysUserDao;
 
-    @Resource
-    private SysRoleDao sysRoleDao;
+    private final SysRoleDao sysRoleDao;
+
+    @Autowired
+    public UserDetailsServiceImpl(SysUserDao sysUserDao, SysRoleDao sysRoleDao) {
+        this.sysUserDao = sysUserDao;
+        this.sysRoleDao = sysRoleDao;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

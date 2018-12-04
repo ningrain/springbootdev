@@ -4,8 +4,6 @@ import com.hh.springbootdev.SpringbootdevApplicationTests;
 import com.hh.springbootdev.util.RedisUtil;
 import org.junit.Test;
 
-import javax.annotation.Resource;
-
 /**
  * Desc:
  * User: jiangningning

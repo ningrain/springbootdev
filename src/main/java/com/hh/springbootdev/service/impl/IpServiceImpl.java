@@ -15,9 +15,9 @@ import com.hh.springbootdev.annotation.TargetDataSource;
 import com.hh.springbootdev.dao.IpDao;
 import com.hh.springbootdev.entity.CustomizeDS;
 import com.hh.springbootdev.service.IpService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +30,12 @@ import java.util.Map;
 @Service
 public class IpServiceImpl implements IpService {
 
-    @Resource
-    private IpDao ipDao;
+    private final IpDao ipDao;
+
+    @Autowired
+    public IpServiceImpl(IpDao ipDao) {
+        this.ipDao = ipDao;
+    }
 
     @Override
     @TargetDataSource(CustomizeDS.CLUSTER)
