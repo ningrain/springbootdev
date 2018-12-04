@@ -1,6 +1,5 @@
 package com.hh.springbootdev.dao;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Map;
  * Time: 11:58
  */
 @Component
-@Mapper
 public interface IpDao {
 
     List<Map<String, Object>> getIpInfo();

@@ -11,7 +11,6 @@
  */
 package com.hh.springbootdev.dao;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Mapper
 public interface ITblArrayDao {
 
     int save(List<Map<String, Object>> list);

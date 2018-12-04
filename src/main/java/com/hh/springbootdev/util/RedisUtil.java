@@ -3,8 +3,6 @@ package com.hh.springbootdev.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh.springbootdev.properties.RedisProperties;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -12,9 +10,6 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * Desc:

@@ -12,7 +12,6 @@
 package com.hh.springbootdev.dao;
 
 import com.hh.springbootdev.entity.SysUser;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.List;
  * @author jiangningning
  */
 @Component
-@Mapper
 public interface SysUserDao {
 
     SysUser findByUsername(String username);
