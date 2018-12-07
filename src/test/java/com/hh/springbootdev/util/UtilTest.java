@@ -1,5 +1,7 @@
 package com.hh.springbootdev.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.MapUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -496,7 +498,10 @@ public class UtilTest {
 
     @Test
     public void test26(){
-
+        System.out.println("+++++++++++++++");
+        System.out.println(System.currentTimeMillis()/1000);
+        System.out.println(new Date().getTime());
+        System.out.println("+++++++++++++++");
     }
 
     public static void main(String[] args) {
@@ -517,6 +522,25 @@ public class UtilTest {
     }
 
     static class Person{
+        private String name;
+        private int age;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
         public void run(){
             System.out.println("run……");
         }
@@ -526,5 +550,21 @@ public class UtilTest {
         public void talk(){
             System.out.println("talk……");
         }
+    }
+
+    @Test
+    public void test27(){
+        Person p = new Person();
+        p.setName("zs");
+        p.setAge(23);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String s = mapper.writeValueAsString(p);
+            // System.out.println(s);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(System.getProperties().toString().replaceAll(",", ",\n"));
     }
 }

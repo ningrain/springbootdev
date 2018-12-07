@@ -1,7 +1,3 @@
-server:
-  servlet:
-    path: /springbootdev
-  port: 8080
 support:
   redishost: 111.231.109.105
   redisport: 6379
