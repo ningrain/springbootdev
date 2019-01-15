@@ -24,7 +24,13 @@
     </select>
 
     <insert id="save">
-        insert into sys_user(username, password) value (#{username}, #{password})
+        insert into sys_user(username, password, realname, user_state) value (#{username}, #{password}, #{realname}, #{userState})
+    </insert>
+    <insert id="batchInsert">
+        insert into sys_user(username, password, realname, user_state) values
+            <foreach collection="list" separator="," item="user">
+                (#{user.username}, #{user.password}, #{user.realname}, #{user.userState})
+            </foreach>
     </insert>
 
     <select id="selectAllUserWithRole" resultMap="userResultMap">

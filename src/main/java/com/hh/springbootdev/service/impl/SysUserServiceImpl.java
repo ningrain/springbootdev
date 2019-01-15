@@ -51,6 +51,11 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    public void batchInsert(List<SysUser> users) {
+        sysUserDao.batchInsert(users);
+    }
+
+    @Override
     public List<SysUser> selectAllUserWithRole() {
         return sysUserDao.selectAllUserWithRole();
     }

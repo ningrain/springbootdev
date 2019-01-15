@@ -33,17 +33,19 @@ public class LocalEnvironmentPostProcessor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         String filePath = System.getProperty("cfgPath");
-        File file = new File(filePath);
-        if (file.exists()){
-            System.out.println("**********加载外部扩展文件：" + filePath + "**********");
-            try {
-                InputStream is = new FileInputStream(file);
-                Properties properties = new Properties();
-                properties.load(is);
-                MutablePropertySources propertySource = environment.getPropertySources();
-                propertySource.addFirst(new PropertiesPropertySource("localconfig", properties));
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (filePath != null) {
+            File file = new File(filePath);
+            if (file.exists()){
+                System.out.println("**********加载外部扩展文件：" + filePath + "**********");
+                try {
+                    InputStream is = new FileInputStream(file);
+                    Properties properties = new Properties();
+                    properties.load(is);
+                    MutablePropertySources propertySource = environment.getPropertySources();
+                    propertySource.addFirst(new PropertiesPropertySource("localconfig", properties));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

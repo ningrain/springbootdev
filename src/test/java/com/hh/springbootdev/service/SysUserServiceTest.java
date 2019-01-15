@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SysUserServiceTest extends SpringbootdevApplicationTests {
@@ -19,20 +20,41 @@ public class SysUserServiceTest extends SpringbootdevApplicationTests {
     }
 
     @Test
-    public void test2(){
-        SysUser user = sysUserService.findByUsername("user");
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        // 加密
-        String encodedPassword = passwordEncoder.encode(user.getPassword().trim());
-        user.setPassword(encodedPassword);
-
-        sysUserService.save(user);
-    }
-
-    @Test
     public void selectAllUserWithRole(){
         List<SysUser> sysUsers = sysUserService.selectAllUserWithRole();
         System.out.println(sysUsers);
+    }
+
+    @Test
+    public void test3(){
+        for (int i = 1; i <= 200000; i++) {
+            SysUser sysUser = new SysUser();
+            sysUser.setUsername("test" + i);
+            sysUser.setPassword(new BCryptPasswordEncoder().encode(sysUser.getUsername()));
+            sysUser.setRealname("test" + i);
+            sysUser.setUserState(true);
+            sysUserService.save(sysUser);
+        }
+    }
+
+    @Test
+    public void test4(){
+        for (int i = 0; i < 100; i++) {
+            batchInsert();
+            System.out.println("===========  " + i + "  =============");
+        }
+    }
+
+    private void batchInsert(){
+        List<SysUser> list = new ArrayList<>();
+        for (int i = 1; i <= 50; i++) {
+            SysUser sysUser = new SysUser();
+            sysUser.setUsername("test" + i);
+            sysUser.setPassword(new BCryptPasswordEncoder().encode(sysUser.getUsername()));
+            sysUser.setRealname("test" + i);
+            sysUser.setUserState(true);
+            list.add(sysUser);
+        }
+        sysUserService.batchInsert(list);
     }
 }

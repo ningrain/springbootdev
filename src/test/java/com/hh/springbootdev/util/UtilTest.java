@@ -3,6 +3,7 @@ package com.hh.springbootdev.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -505,7 +506,7 @@ public class UtilTest {
     }
 
     public static void main(String[] args) {
-        ExecutorService executor = Executors.newFixedThreadPool(3);
+        /*ExecutorService executor = Executors.newFixedThreadPool(3);
         for (int i = 0; i < 15; i++) {
             int finalI = i;
             executor.execute(() -> {
@@ -518,7 +519,19 @@ public class UtilTest {
                 // System.out.println(finalI + " end");
             });
         }
-        executor.shutdown();
+        executor.shutdown();*/
+        System.out.println("doing something........");
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                System.out.println("ShutdownHook execute");
+            }
+        });
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     static class Person{
@@ -566,5 +579,12 @@ public class UtilTest {
         }
 
         System.out.println(System.getProperties().toString().replaceAll(",", ",\n"));
+    }
+
+    @Test
+    public void test28(){
+        String blBps = "15454.25K";
+        System.out.println(blBps.substring(blBps.length() - 1));
+        System.out.println("192.168.0.4".contains(""));
     }
 }

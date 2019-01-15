@@ -29,5 +29,7 @@ public interface SysUserService {
 
     void save(SysUser user);
 
+    void batchInsert(List<SysUser> users);
+
     List<SysUser> selectAllUserWithRole();
 }

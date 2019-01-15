@@ -31,5 +31,7 @@ public interface SysUserDao {
 
     void save(SysUser user);
 
+    void batchInsert(List<SysUser> users);
+
     List<SysUser> selectAllUserWithRole();
 }
