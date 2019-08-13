@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -16,10 +19,12 @@ import sun.net.util.IPAddressUtil;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -506,31 +511,59 @@ public class UtilTest {
     }
 
     public static void main(String[] args) {
-        /*ExecutorService executor = Executors.newFixedThreadPool(3);
-        for (int i = 0; i < 15; i++) {
-            int finalI = i;
-            executor.execute(() -> {
-                System.out.println(finalI + " start");
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // System.out.println(finalI + " end");
-            });
+        TraceThreadPoolExecutor traceThreadPoolExecutor = new TraceThreadPoolExecutor(0, Integer.MAX_VALUE, 0L,
+                TimeUnit.SECONDS, new SynchronousQueue<>());
+        for (int i = 0; i < 5; i++) {
+            traceThreadPoolExecutor.execute(new DivTask(100, 0));
         }
-        executor.shutdown();*/
-        System.out.println("doing something........");
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                System.out.println("ShutdownHook execute");
-            }
-        });
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    }
+
+    static class DivTask implements Runnable {
+        int a;
+        int b;
+        public DivTask(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+        @Override
+        public void run() {
+            double re = a / b;
+            System.out.println(re);
+        }
+    }
+
+    static class TraceThreadPoolExecutor extends ThreadPoolExecutor {
+
+        public TraceThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+            super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue);
+        }
+
+        @Override
+        public void execute(Runnable task) {
+            super.execute(warp(task, clientTrace(), Thread.currentThread().getName()));
+        }
+
+        @Override
+        public Future<?> submit(Runnable task) {
+            return super.submit(warp(task, clientTrace(), Thread.currentThread().getName()));
+        }
+
+        private Exception clientTrace() {
+            return new Exception("Client stack trace");
+        }
+
+        private Runnable warp(final Runnable task, final Exception clientStack, String clientThreadName) {
+            return new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        task.run();
+                    } catch (Exception e) {
+                        clientStack.printStackTrace();
+                        throw e;
+                    }
+                }
+            };
         }
     }
 
@@ -587,4 +620,124 @@ public class UtilTest {
         System.out.println(blBps.substring(blBps.length() - 1));
         System.out.println("192.168.0.4".contains(""));
     }
+
+    @Test
+    public void testMkdirs() throws IOException, InterruptedException, URISyntaxException {
+
+        // 1 获取文件系统
+        Configuration configuration = new Configuration();
+        // 配置在集群上运行
+        // configuration.set("fs.defaultFS", "hdfs://hadoop102:9000");
+        // FileSystem fs = FileSystem.get(configuration);
+
+        FileSystem fs = FileSystem.get(new URI("hdfs://111.231.109.105:9000"), configuration, "root");
+
+        // 2 创建目录
+        fs.mkdirs(new Path("/1108/daxian/banzhang"));
+
+        // 3 关闭资源
+        fs.close();
+    }
+
+    @Test
+    public void testCopyFromLocalFile() throws IOException, InterruptedException, URISyntaxException {
+
+        // 1 获取文件系统
+        Configuration configuration = new Configuration();
+        // 配置在集群上运行
+        // configuration.set("fs.defaultFS", "hdfs://hadoop102:9000");
+        // FileSystem fs = FileSystem.get(configuration);
+
+        FileSystem fs = FileSystem.get(new URI("hdfs://111.231.109.105:9000"), configuration, "root");
+
+        // 2 copy本地文件至hdfs
+        fs.copyFromLocalFile(new Path("E:\\hadooptest1.txt"), new Path("/1108/daxian/banzhang"));
+
+        // 3 关闭资源
+        fs.close();
+    }
+
+    @Test
+    public void testCopyToLocalFile() throws IOException, InterruptedException, URISyntaxException {
+
+        // 1 获取文件系统
+        Configuration configuration = new Configuration();
+        // 配置在集群上运行
+        // configuration.set("fs.defaultFS", "hdfs://hadoop102:9000");
+        // FileSystem fs = FileSystem.get(configuration);
+
+        FileSystem fs = FileSystem.get(new URI("hdfs://111.231.109.105:9000"), configuration, "root");
+
+        // 2 copy hdfs文件至本地
+        fs.copyToLocalFile(false,
+                new Path("/1108/daxian/banzhang/hadooptest.txt"),
+                new Path("E:\\hadooptest1.txt"),
+                true);
+
+        // 3 关闭资源
+        fs.close();
+    }
+
+    @Test
+    public void testDelete() throws IOException, InterruptedException, URISyntaxException {
+
+        // 1 获取文件系统
+        Configuration configuration = new Configuration();
+        // 配置在集群上运行
+        // configuration.set("fs.defaultFS", "hdfs://hadoop102:9000");
+        // FileSystem fs = FileSystem.get(configuration);
+
+        FileSystem fs = FileSystem.get(new URI("hdfs://111.231.109.105:9000"), configuration, "root");
+
+        // 2 删除
+        fs.delete(new Path("/1108"), true);
+
+        // 3 关闭资源
+        fs.close();
+    }
+
+    @Test
+    public void byteArrayTest() {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(bos);
+            //id
+            dos.writeLong(1238L);
+            //collecterId
+            dos.writeInt(13);
+            //msgAttri
+            dos.writeBytes("conf");
+            dos.write(new byte[6]);
+            //time
+            dos.writeLong(20190813113925L);
+            byte[] data = bos.toByteArray();
+            ByteArrayInputStream bis = new ByteArrayInputStream(data);
+            DataInputStream dis = new DataInputStream(bis);
+            byte[] bytes = new byte[8];
+            dis.read(bytes, 0, 8);
+            byte[] bytes1 = new byte[4];
+            dis.read(bytes1, 0, 4);
+            System.out.println(Arrays.toString(bytes));
+            System.out.println(bytesToLong(bytes));
+            System.out.println(Arrays.toString(bytes1));
+            System.out.println(byteArrayToInt(bytes1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static long bytesToLong(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.put(bytes, 0, bytes.length);
+        buffer.flip();//need flip
+        return buffer.getLong();
+    }
+
+    private static int byteArrayToInt(byte[] b) {
+        return   b[3] & 0xFF |
+                (b[2] & 0xFF) << 8 |
+                (b[1] & 0xFF) << 16 |
+                (b[0] & 0xFF) << 24;
+    }
+
 }
