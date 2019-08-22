@@ -15,6 +15,7 @@ import com.hh.springbootdev.dao.SysUserDao;
 import com.hh.springbootdev.entity.SysUser;
 import com.hh.springbootdev.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,8 @@ import java.util.List;
  * @author jiangningning
  */
 @Service
+@EnableCaching
+@CacheConfig(cacheNames = "users")
 public class SysUserServiceImpl implements SysUserService {
 
     private final SysUserDao sysUserDao;
@@ -41,11 +44,13 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
+    @Cacheable(cacheNames = "users")
     public List<SysUser> findAll() {
         return sysUserDao.findAll();
     }
 
     @Override
+    @CacheEvict(cacheNames = "users", allEntries = true)
     public void save(SysUser user) {
         sysUserDao.save(user);
     }

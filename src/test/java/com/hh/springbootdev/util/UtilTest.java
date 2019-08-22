@@ -3,7 +3,6 @@ package com.hh.springbootdev.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -738,6 +737,49 @@ public class UtilTest {
                 (b[2] & 0xFF) << 8 |
                 (b[1] & 0xFF) << 16 |
                 (b[0] & 0xFF) << 24;
+    }
+
+    @Test
+    public void test29() {
+        List<Map<String, Integer>> list = new ArrayList<>();
+        Map<String, Integer> map1 = new HashMap<>();
+        map1.put("start", 8);
+        map1.put("end", 15);
+        list.add(map1);
+        Map<String, Integer> map2 = new HashMap<>();
+        map2.put("start", 4);
+        map2.put("end", 9);
+        list.add(map2);
+        Map<String, Integer> map3 = new HashMap<>();
+        map3.put("start", 11);
+        map3.put("end", 18);
+        list.add(map3);
+        Map<String, Integer> map4 = new HashMap<>();
+        map4.put("start", 20);
+        map4.put("end", 26);
+        list.add(map4);
+
+        List<Map<String, Integer>> resultList = new ArrayList<>();
+        resultList.add(list.get(0));
+        list.forEach(data -> resultList.forEach(result -> {
+            int dataStart = MapUtils.getIntValue(data, "start");
+            int dataEnd = MapUtils.getIntValue(data, "end");
+            int resultStart = MapUtils.getIntValue(result, "start");
+            int resultEnd = MapUtils.getIntValue(result, "end");
+            boolean b = dataStart <= resultEnd && dataEnd >= resultStart;
+            if (b) {
+                result.put("start", dataStart >= resultStart ? dataStart : resultStart);
+                result.put("end", dataEnd >= resultEnd ? dataEnd : resultEnd);
+                resultList.add(result);
+            } else {
+                Map<String, Integer> map = new HashMap<>();
+                map.put("start", dataStart);
+                map.put("end", dataEnd);
+                resultList.add(map);
+            }
+        }));
+
+        System.out.println(resultList);
     }
 
 }

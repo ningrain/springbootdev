@@ -4,6 +4,8 @@ import com.hh.springbootdev.SpringbootdevApplicationTests;
 import com.hh.springbootdev.entity.SysUser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -13,6 +15,9 @@ public class SysUserServiceTest extends SpringbootdevApplicationTests {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Test
     public void findByUsername() {
@@ -43,6 +48,32 @@ public class SysUserServiceTest extends SpringbootdevApplicationTests {
             batchInsert();
             System.out.println("===========  " + i + "  =============");
         }
+    }
+
+    @Test
+    public void findAllTest() {
+        System.out.println("第一次查询......");
+        System.out.println(sysUserService.findAll());
+        System.out.println("第二次查询......");
+        System.out.println(sysUserService.findAll());
+        SysUser sysUser = new SysUser();
+        sysUser.setUsername("AAA");
+        sysUser.setPassword("AAA");
+        sysUser.setRealname("AAA");
+        sysUser.setUserState(true);
+        sysUserService.save(sysUser);
+        System.out.println("第三次查询......");
+        System.out.println(sysUserService.findAll());
+    }
+
+    @Test
+    public void saveUserTest() {
+        SysUser sysUser = new SysUser();
+        sysUser.setUsername("AAA");
+        sysUser.setPassword("AAA");
+        sysUser.setRealname("AAA");
+        sysUser.setUserState(true);
+        sysUserService.save(sysUser);
     }
 
     private void batchInsert(){
