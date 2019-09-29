@@ -3,6 +3,7 @@ package com.hh.springbootdev.properties;
 import com.hh.springbootdev.SpringbootdevApplicationTests;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.core.env.Environment;
 
 /**
