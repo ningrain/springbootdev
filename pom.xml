@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <jackson_version>2.9.10</jackson_version>
+        <jackson_version>2.10.1</jackson_version>
         <hadoop_version>2.7.6</hadoop_version>
         <hbase_version>2.2.0</hbase_version>
         <docker.image.prefix>springbootdev</docker.image.prefix>
