@@ -1,5 +1,9 @@
 package com.hh.springbootdev.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +19,10 @@ import java.util.List;
  * Date: 2018/4/20
  * Time: 16:36
  */
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysUser implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,29 +45,14 @@ public class SysUser implements UserDetails, Serializable {
 
     private List<SysRole> roleList;
 
-    public SysUser(long userId, String username, String realname, String password, boolean userState, List<SysRole> roleList) {
-        this.userId = userId;
-        this.username = username;
-        this.realname = realname;
-        this.password = password;
-        this.userState = userState;
-        this.roleList = roleList;
-    }
-
-    public SysUser() {
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
     @Override
-    public String getUsername() {
-        return username;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> auths = new ArrayList<>();
+        List<SysRole> roles = this.getRoleList();
+        for (SysRole role : roles) {
+            auths.add(new SimpleGrantedAuthority(role.getRoleName()));
+        }
+        return auths;
     }
 
     @Override
@@ -82,61 +75,4 @@ public class SysUser implements UserDetails, Serializable {
         return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getRealname() {
-        return realname;
-    }
-
-    public void setRealname(String realname) {
-        this.realname = realname;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> auths = new ArrayList<>();
-        List<SysRole> roles = this.getRoleList();
-        for (SysRole role : roles) {
-            auths.add(new SimpleGrantedAuthority(role.getRoleName()));
-        }
-        return auths;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean getUserState() {
-        return userState;
-    }
-
-    public void setUserState(boolean userState) {
-        this.userState = userState;
-    }
-
-    public List<SysRole> getRoleList() {
-        return roleList;
-    }
-
-    public void setRoleList(List<SysRole> roleList) {
-        this.roleList = roleList;
-    }
-
-    @Override
-    public String toString() {
-        return "SysUser{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", realname='" + realname + '\'' +
-                ", password='" + password + '\'' +
-                ", userState=" + userState +
-                ", roleList=" + roleList +
-                '}';
-    }
 }

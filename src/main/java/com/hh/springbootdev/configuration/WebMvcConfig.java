@@ -13,6 +13,8 @@ package com.hh.springbootdev.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,6 +26,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        /*
+         * 将classpath 下的 myfile 文件夹注册为资源文件夹
+         * */
+        registry.addResourceHandler("/myfile/**").addResourceLocations("classpath:/myfile/");
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*")
+                .allowedMethods("GET", "POST", "DELETE", "HEAD", "PUT", "OPTIONS")
+                .allowCredentials(true).maxAge(3600);
+    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {

@@ -11,58 +11,27 @@
  */
 package com.hh.springbootdev.kafka;
 
-import com.hh.springbootdev.properties.KafkaProperties;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
-import java.util.Properties;
-
+@Component
 public class MsgProducer {
 
-    public static Producer<Object, Object> getProducer(KafkaProperties properties) {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", properties.getBootstrapServers());
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("acks", "all");
-        props.put("batch.size", 16384);
-        props.put("retries", 0);
-        props.put("linger.ms", 1);
-        props.put("buffer.memory", 33554432);
-        return new KafkaProducer<>(props);
+    private final static Logger logger = LoggerFactory.getLogger(MsgProducer.class);
+
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    public MsgProducer(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
     }
 
-    public static void sendMsg2Kafka(Producer<Object, Object> producer, String topic, String key, String msg) {
-        producer.send(new ProducerRecord<>(topic, key, msg));
-        producer.close();
-    }
-
-    public static void main(String[] args) {
-        //MyThread myThread = new MyThread();
-        new Thread(new MyThread()).start();
-        new Thread(new MyThread()).start();
-        new Thread(new MyThread()).start();
-        new Thread(new MyThread()).start();
-    }
-
-}
-
-class MyThread implements Runnable {
-
-    @Override
-    public void run() {
-        KafkaProperties kafkaProperties = new KafkaProperties();
-        kafkaProperties.setBootstrapServers("111.231.109.105:9092");
-        Producer<Object, Object> producer = MsgProducer.getProducer(kafkaProperties);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        String currentStringTimeMillis = String.valueOf(System.currentTimeMillis());
-        MsgProducer.sendMsg2Kafka(producer, "topic1", currentStringTimeMillis,
-                Thread.currentThread().getName() + " -> Topic1's msg ---->>" + currentStringTimeMillis);
+    public void sendMsg2Kafka(String topic, String msg) {
+        logger.info(">>>>>------producer msg: [{}]", msg);
+        kafkaTemplate.send(topic, msg);
     }
 
 }

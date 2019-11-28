@@ -1,5 +1,7 @@
 package com.hh.springbootdev.properties;
 
+import lombok.Data;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -8,6 +10,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Date: 2018/4/12
  * Time: 14:36
  */
+@Data
+@ToString
 @ConfigurationProperties(prefix = "spring.datasource")
 public class DbProperties {
 
@@ -19,35 +23,4 @@ public class DbProperties {
 
     private String password;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDriverClassName() {
-        return driverClassName;
-    }
-
-    public void setDriverClassName(String driverClassName) {
-        this.driverClassName = driverClassName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

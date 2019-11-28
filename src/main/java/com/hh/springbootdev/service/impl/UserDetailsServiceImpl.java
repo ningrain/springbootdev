@@ -48,6 +48,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             sysUser.setRoleList(sysRoleDao.getRolesByUserId(sysUser.getUserId()));
         }
         return new SysUser(sysUser.getUserId(), sysUser.getUsername(), sysUser.getRealname(), sysUser.getPassword(),
-                sysUser.getUserState(), sysUser.getRoleList());
+                sysUser.isUserState(), sysUser.getRoleList());
     }
 }

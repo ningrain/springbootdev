@@ -11,33 +11,13 @@
  */
 package com.hh.springbootdev.entity;
 
+import lombok.Data;
+
+@Data
 public class TblArray {
 
     private Integer[] a;
     private String[][] b;
     private int c;
 
-    public Integer[] getA() {
-        return a;
-    }
-
-    public void setA(Integer[] a) {
-        this.a = a;
-    }
-
-    public String[][] getB() {
-        return b;
-    }
-
-    public void setB(String[][] b) {
-        this.b = b;
-    }
-
-    public int getC() {
-        return c;
-    }
-
-    public void setC(int c) {
-        this.c = c;
-    }
 }
