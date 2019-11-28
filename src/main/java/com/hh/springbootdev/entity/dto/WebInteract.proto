@@ -1,0 +1,341 @@
+syntax = "proto3";
+package Msg;
+
+// [START java_declaration]
+option java_package = "com.hh.ddos.entity";
+option java_outer_classname = "Msg";
+// [END java_declaration]
+
+/*=================================== 配置消息 ===================================*/
+/*---------------- 大流量IP阈值配置 ----------------*/
+message HomeIpThreshold {
+    uint32 attackType = 1; //攻击类型ID
+    uint64 threshold = 2; //家庭用户IP的预设的流量阈值，单位：bps
+}
+
+/*---------------- 告警规则配置消息 ----------------*/
+/*
+用于大类告警规则配置，目前已有大类告警规则：
+1.阈值配置
+2.OTVTP配置
+3.基线配置
+目前需支持的大类告警规则配置的只有OTVTP，
+且需要满足不同告警级别(ip,防护对象，生运营商...)
+单独配置。
+*/
+message WarnRuleClassConf{
+    uint32 objectLevel = 1;//对象级别
+    uint32 isThresholdValid = 2;//Threshold规则在此对象级别是否生效:1生效；0 不生效
+    uint32 isOTVTPValid = 3;//otvtp规则在此对象级别是否生效:1生效；0 不生效
+    uint32 isBaselineValid = 4;//baselise规则在此对象级别是否生效:1生效；0 不生效
+}
+
+/* 用于大类告警规则下，每个子类告警规则配置 */
+message WarnRuleSubClassConf {
+    uint32 attackType = 1; //攻击类型ID
+    uint32 objectLevel = 2; //对象级别
+    uint32 startCount = 3; //连续startCount满足告警规则，则产生告警
+    uint32 stopCount = 4; //连续stopCount不满足告警规则，则消除告警
+    //阈值相关配置
+    uint64 mbps = 5; //attackType攻击类型的bps阈值
+    uint64 conns = 6; //attackType攻击类型的conns阈值
+    //基线相关配置
+    uint32 bpsRatioAnswerTh = 7; //(攻击类型bps/上行总bps)的波动增率
+    uint32 ppsRatioAnswerTh = 8; //(攻击类型pps/上行总pps)的波动增率
+    uint32 avgPktLenRatioTh = 9; //平均报文长度的波动比率
+    uint32 bpsLth = 10; //attackType攻击类型的低危级别的bps与基线的比例关系
+    uint32 ppsLth = 11; //attackType攻击类型的低危级别的pps与基线的比例关系
+    uint32 connsLth = 12; //attackType攻击类型的低危级别的conns与基线的比例关系
+}
+
+/*---------------- 防护对象配置消息 ----------------*/
+message ProtectObjectConf {
+    uint64 id = 1; //防护对象id
+    string ip = 2; //防护对象id下的一个ip
+    uint32 state = 3; //0代表打开，1代表关闭
+}
+
+/*---------------- 白名单配置消息 ----------------*/
+message WhiteIpConf {
+    uint64 id = 1; //白名单ip的id
+    string ip = 2; //白名单ip
+    uint32 state = 3; //0代表打开，1代表关闭
+}
+
+/*---------------- 配置下发包装消息 ----------------*/
+    message ConfMsgRequest { //配置下发消息
+    string msgType = 1; //消息类型
+    string msgStage = 2; //消息状态
+    string opType = 3; //操作类型
+    repeated HomeIpThreshold homeIpTh = 4; //家庭ip流量阈值配置
+    repeated WarnRuleClassConf warnRuleClass = 5;//告警规则配置
+    repeated WarnRuleSubClassConf warnRuleSubClass = 6; //子类告警规则配置
+    repeated ProtectObjectConf protectObject = 7; //防护对象相关配置
+    repeated WhiteIpConf whiteIp = 8; //ip白名单相关配置
+}
+
+/*---------------- 配置下发应答消息 ----------------*/
+message ConfMsgReply { //配置消息的应答消息
+    string msgType = 1; //消息类型(将配置消息的消息类型带回去)
+    string msgStage = 2; //消息状态
+}
+
+/*=================================== 溯源通用结构 ===================================*/
+message SrcIpMsg{
+    string srcIP = 1;//攻击源IP集合
+    uint64 bps = 2;
+    uint64 pps = 3;
+}
+
+message InIfIndexMsg{
+    uint32 InIfIndex = 1;//某个路由器某端口的索引值
+    string inIfIp = 2;//某个路由器入端口的ip地址
+    uint64 bps = 3;
+    uint64 pps = 4;
+    bool isBoundary = 5;//仅采集用(true 表示已经到达边界， false 非边界), 仅在表示边界的时候带源IP信息
+    repeated SrcIpMsg srcIP = 6;//攻击源IP集合
+}
+
+message RouterMsg{
+    string routerId = 1;//路由器管理口ip
+    string outIfIp = 2;//此路由器某个出端口的ip
+    string nextHopIp = 3; //仅采集用, 用于溯源查询
+
+    //对于中心上报WEB这里数组大小为1
+    repeated InIfIndexMsg inIfIndex = 4;
+}
+
+/*=================================== 事件上报消息 ===================================*/
+/*---------------- 网外ip/攻击来源信息 ----------------*/
+message OutsideIpMsg {
+    string outsideIp = 1; //网外IP
+    uint64 conns = 2; //网外ip为outsideIp的并发连接数
+    uint64 bps = 3; //网外ip为outsideIp的流速
+    uint64 pps = 4; //网外ip为outsideIp的包速
+    repeated uint32 outsidePort = 5; //网外端口
+}
+
+/*---------------- 网内端口消息 ----------------*/
+message InsidePortMsg {
+    uint32 insidePort = 1; //网内端口
+    uint64 conns = 2; //网外端口为insidePort的并发连接数
+    uint64 bps = 3; //网外端口为insidePort的流速
+    uint64 pps = 4; //网外端口为insidePort的包速
+    repeated OutsideIpMsg outsideIp = 5; //网外IP相关信息
+}
+
+/*---------------- DstIP溯源消息 ----------------*/
+message PathMsg{
+    repeated RouterMsg router = 1;
+}
+
+/*---------------- ip源分布消息 ----------------*/
+message IpDistribution {
+    uint32 netId = 1; //对应于tr_net_addr表的netId
+    uint64 conns = 2; //netId级别对应的cons汇聚
+    uint64 bps = 3; //netId级别对应的bps汇聚
+    uint64 pps = 4; //netId级别对应的pps汇聚
+}
+
+/*---------------- 攻击事件攻击源AS消息 ----------------*/
+message AttackEventSrcAs
+{
+    uint32 as = 1;//源as
+    uint64 asbps = 2;//源AS流量bps
+    uint64 aspps = 3;//源AS流量pps
+};
+
+/*---------------- 网内ip/攻击目标消息 ----------------*/
+message InsideIpMsg {
+    string ip = 1; //网内ip
+    uint64 conns = 2; //此IP(insideIp)某种攻击类型并发连接数
+    uint64 bps = 3; //此IP(insideIp)某种攻击类型流速
+    uint64 pps = 4; //此IP(insideIp)某种攻击类型包速
+    repeated InsidePortMsg insidePort = 5; //网内端口相关信息
+    repeated AttackEventSrcAs as = 6; //攻击源as
+    repeated PathMsg path = 7;//对于采集上报中心，这里只有一层， 对于中心上报WEB这里是多层
+}
+
+message EventReport {
+    string id = 1; //事件ID
+    uint32 collectorId = 2; //采集ID
+    uint32 attackType = 3; //攻击类型
+    uint32 warnLevel = 4; //告警级别
+    uint32 objectLevel = 5;
+    uint32 direction = 6; //攻击方向，1标识出网，2标识入网
+    uint32 state = 7; //告警状态(开始，进行中，结束)
+    // 对象级别：
+    // 1： IP级           -> "0"
+    // 2： 对象级         -> "防护对象ID"
+    // 3： 省运营商级     -> "outNetId&inNetId"
+    // 4： 运营商级       -> "outIspId&inIspId"
+    // 5： 出入网级       -> "0&0" (DPI版本)
+    // 11：路由端口级     -> "路由器IP_端口"
+    // 12：路由器级       -> "路由器IP"
+    // 13：互联互通节点级 -> "对端ispid&节点ID"
+    // 14：互联运营商级   -> "对端ispid&本端ispid"
+    // 15：全网出口级     -> "0&0" (netflow版本)
+    string objectId = 8;
+    uint32 startTime = 9; //开始时间
+    uint32 currTime = 10; //当前时间
+    uint32 stopTime = 11; //结束时间
+    uint64 conns = 12; //此对象的并发连接数
+    uint64 bps = 13; //此对象的流速
+    uint64 pps = 14; //此对象的包速
+    uint64 blConns = 15; //conns基线
+    uint64 blBps = 16; //bps基线
+    uint64 blPps = 17; //pps基线
+    repeated InsideIpMsg inIp = 18; //网内IP相关信息
+    repeated IpDistribution outsideIpDst = 19; //网外ip的归属地分布
+    repeated uint32 endCause = 20; //事件结束原因上报
+}
+
+/*=================================== 溯源查询消息 ===================================*/
+//中心查询溯源消息----此只是定义，这块可能只是用二进制方式发送
+message QueryTraceMsg{
+    uint32 msgType = 1; //1:初次上报的告警事件信息 2：中心发给采集的查询信息 3：采集回复中心的溯源信息 4：路由器告警信息
+    uint32 attackType = 2;//攻击类型
+    uint32 peerIfIndex = 3;//对端路由器端口索引值
+    uint64 objectId = 4;//防护对象id,不做处理，直接带回给中心
+    string warnIp = 5;//告警ip
+    string routerId = 6;//对端管理口ip
+    string collectorIp = 7; //采集管理口ip
+}
+
+//采集返回给中心的溯源应答消息
+message ReplyTraceMsg{
+    uint32 msgType = 1; //1:初次上报的告警事件信息 2：中心发给采集的查询信息 3：采集回复中心的溯源信息 4：路由器告警信息
+    uint32 attackType = 2;//攻击类型,来自请求消息的值
+    uint64 objectId = 4;//防护对象id,来自请求消息的值
+    string warnIp = 5;//告警IP，来自请求消息
+
+    repeated RouterMsg router = 6;
+}
+
+/*=================================== 流量存储公共消息 ===================================*/
+/*---------------- 公共类 ----------------*/
+message RTOutIpFlow {
+    string ip = 1; //网外IP
+    uint64 conns = 2; //此IP(ip)的并发连接数
+    uint64 bps = 3; //此IP(ip)的流量
+    uint64 pps = 4; //此IP(ip)的流速
+}
+
+message RTInPortFlow {
+    uint32 port = 1; //网内端口
+    uint64 conns = 2; //此端口(port)的并发连接数
+    uint64 bps = 3; //此端口(port)的流量
+    uint64 pps = 4; //此端口(port)的流速
+    repeated RTOutIpFlow outIpFlow = 5; //网外ip相关信息
+}
+
+message RTInIpFlow {
+    //ip级别的流量会重复存，其他级别不会重复
+    string ip = 1; //网内IP
+    uint64 conns = 2; //此网内IP的并发连接数
+    uint64 bps = 3; //此网内IP的流量
+    uint64 pps = 4; //此网内IP的流速
+
+    repeated RTInPortFlow inPortFlow = 5; //网内端口相关信息
+}
+
+/*=================================== 实时流量存储消息 ===================================*/
+/*---------------- 实时流量存储 分两部分----------------*/
+message RTObjectFlowA { //以某特定对象汇聚的流量
+    //以下三个字段在ip级别时填ip的流量，其他情况是对象级别流量
+    uint64 dnAttackConns = 2; //此时间片的下行攻击并发连接数
+    uint64 dnAttackBps = 3; //此时间片的下行攻击流速
+    uint64 dnAttackPps = 4; //此时间片的下行攻击包速
+    uint64 dnAnswerBps = 5; //此时间片的下行攻击的应答的流速
+    uint64 dnAnswerPps = 6; //此时间片的下行攻击的应答的包速
+
+    uint64 upAttackConns = 7; //此时间片的上行攻击并发连接数
+    uint64 upAttackBps = 8; //此时间片的上行攻击流速
+    uint64 upAttackPps = 9; //此时间片的上行攻击包速
+    uint64 upAnswerBps = 10; //此时间片的上行攻击的应答的流速
+    uint64 upAnswerPps = 11; //此时间片的上行攻击的应答的包速
+
+    uint64 totalConns = 12; //某网内该对象的总并发连接数(不区分攻击类型)
+    uint64 dnTotalBps = 13; //某网内该对象的总下行流速(不区分攻击类型)
+    uint64 dnTotalPps = 14; //某网内该对象的总下行包速(不区分攻击类型)
+    uint64 upTotalBps = 15; //某网内该对象的总上行流速(不区分攻击类型)
+    uint64 upTotalPps = 16; //某网内该对象的总上行包速(不区分攻击类型)
+}
+
+message RTObjectFlowB { //value 部分
+    repeated RTInIpFlow dnInIpFlow = 1;
+    repeated RTInIpFlow upInIpFlow = 2;
+}
+
+/*=================================== 基线流量存储消息 ===================================*/
+/*---------------- 基线流量存储 ----------------*/
+message BLSliceFlow {
+    uint32 mTime = 1; //此时间片的开始时间
+    uint64 dnAttackConns = 2; //此时间片的下行攻击并发连接数
+    uint64 dnAttackBps = 3; //此时间片的下行攻击流速
+    uint64 dnAttackPps = 4; //此时间片的下行攻击包速
+    uint64 dnAnswerBps = 5; //此时间片的下行攻击的应答的流速
+    uint64 dnAnswerPps = 6; //此时间片的下行攻击的应答的包速
+
+    uint64 upAttackConns = 7; //此时间片的上行攻击并发连接数
+    uint64 upAttackBps = 8; //此时间片的上行攻击流速
+    uint64 upAttackPps = 9; //此时间片的上行攻击包速
+    uint64 upAnswerBps = 10; //此时间片的上行攻击的应答的流速
+    uint64 upAnswerPps = 11; //此时间片的上行攻击的应答的包速
+
+    uint64 totalConns = 12; //此时间片的总并发连接数不区分攻击类型)
+    uint64 dnTotalBps = 13; //此时间片的下行总流速(不区分攻击类型)
+    uint64 dnTotalPps = 14; //此时间片的下行总包速(不区分攻击类型)
+    uint64 upTotalBps = 15; //此时间片的上行总流速(不区分攻击类型)
+    uint64 upTotalPps = 16; //此时间片的上行总包速(不区分攻击类型)
+}
+
+message BLFlow {
+    repeated BLSliceFlow blSlise = 1;
+}
+
+ /*---------------------------查询请求/查询应答--------------------------*/
+ message QueryRequest {
+     uint32 attackType = 1; //攻击类型ID
+     uint32 sTime = 2; //开始时间
+     uint32 eTime = 3; //结束时间
+     uint32 tableType = 4; // 1：表示实时流量表，2：表示基线流量表
+     uint32 column = 5; //0：表示查询表的所有列、1：表示查询表的a列，2：表示查询表的b列
+     uint32 objLevel = 6; //1：ip级、2：防护对象级、3：省级运营商级、4：运营商级、5：出入网级
+     string objId = 7; //ipv4或ipv6地址、防护对象id、省级运营商(netid)、运营商(ispid)、出入网(0)
+ }
+ 
+ //-----------------查询 基线 返回应答
+ message QueryBLReply {
+     uint32 mTime = 1;
+     BLFlow blFlow = 2; //需写入的数据，A列数据在0位置，B列数据在1位置，以此类推
+ }
+ 
+ message QueryBLReplyConverge {
+     repeated QueryBLReply queryBlReply = 1;
+ }
+ 
+ //-----------------查询 实时流量 返回应答
+ message QueryRTReply {
+     uint32 mTime = 1;
+     RTObjectFlowA rtAFlow = 2;
+     RTObjectFlowB rtBFlow = 3;
+ }
+ 
+ message QueryRTReplyConverge {
+     repeated QueryRTReply queryRtReply = 1;
+ }
+
+/*=================================== 写数据请求 ===================================*/
+message WriteRequest {
+    uint32 mTime = 1; //时间
+    uint32 objLevel = 2; //1：ip级、2：防护对象级、3：省级运营商级、4：运营商级、5：出入网级
+    string objId = 3; //ipv4或ipv6地址、防护对象id、省级运营商(netid)、运营商(ispid)、出入网(0)
+    repeated bytes value = 4; //需写入的数据，A列数据在0位置，B列数据在1位置，以此类推
+}
+
+message WriteRequestConverge {
+    uint32 attackType = 1; //攻击类型ID
+    uint32 tableType = 2; // 1：表示实时流量表，2：表示基线流量表
+    repeated WriteRequest writeRequest = 3;
+}
