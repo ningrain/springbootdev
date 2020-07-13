@@ -11,338 +11,264 @@
  */
 package com.hh.springbootdev.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 时间工具类
  *
- * @author xiaoleilu
+ * @author jiangningning
  */
+@Log4j
 public class DateUtil {
-    private static Logger log = LoggerFactory.getLogger(DateUtil.class);
+
+    public final static String DATE_FORMAT = "yyyy-MM-dd";
+    public final static String SECOND_TIME_FORMAT = "HH:mm:ss";
+    public final static String MILLI_TIME_FORMAT = "HH:mm:ss SSS";
+    public final static String DATE_SECOND_TIME_FORMAT = DATE_FORMAT + " " + SECOND_TIME_FORMAT;
+    public final static String DATE_MILLI_TIME_FORMAT = DATE_FORMAT + " " + MILLI_TIME_FORMAT;
 
     /**
-     * 毫秒
+     * <p>Title:nowDay</p>
+     * <p>Description: 当前日期</p>
+     * @return java.time.LocalDate
      */
-    public final static long MS = 1;
-    /**
-     * 每秒钟的毫秒数
-     */
-    public final static long SECOND_MS = MS * 1000;
-    /**
-     * 每分钟的毫秒数
-     */
-    public final static long MINUTE_MS = SECOND_MS * 60;
-    /**
-     * 每小时的毫秒数
-     */
-    public final static long HOUR_MS = MINUTE_MS * 60;
-    /**
-     * 每天的毫秒数
-     */
-    public final static long DAY_MS = HOUR_MS * 24;
-
-    /**
-     * 标准日期格式
-     */
-    public final static String NORM_DATE_PATTERN = "yyyy-MM-dd";
-    /**
-     * 标准时间格式
-     */
-    public final static String NORM_TIME_PATTERN = "HH:mm:ss";
-    /**
-     * 标准日期时间格式
-     */
-    public final static String NORM_DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-    /**
-     * HTTP头中日期时间格式
-     */
-    public final static String HTTP_DATETIME_PATTERN = "EEE, dd MMM yyyy HH:mm:ss z";
-
-    /**
-     * 标准日期（不含时间）格式化器
-     */
-    private final static SimpleDateFormat NORM_DATE_FORMAT = new SimpleDateFormat(NORM_DATE_PATTERN);
-    /**
-     * 标准时间格式化器
-     */
-    private final static SimpleDateFormat NORM_TIME_FORMAT = new SimpleDateFormat(NORM_TIME_PATTERN);
-    /**
-     * 标准日期时间格式化器
-     */
-    private final static SimpleDateFormat NORM_DATETIME_FORMAT = new SimpleDateFormat(NORM_DATETIME_PATTERN);
-    /**
-     * HTTP日期时间格式化器
-     */
-    private final static SimpleDateFormat HTTP_DATETIME_FORMAT = new SimpleDateFormat(HTTP_DATETIME_PATTERN, Locale.US);
-
-    /**
-     * 当前时间，格式 yyyy-MM-dd HH:mm:ss
-     *
-     * @return 当前时间的标准形式字符串
-     */
-    public static String now() {
-        return formatDateTime(new Date());
+    public static LocalDate nowDay() {
+        return LocalDate.now();
     }
 
     /**
-     * 当前日期，格式 yyyy-MM-dd
-     *
-     * @return 当前日期的标准形式字符串
+     * <p>Title:nowDay</p>
+     * <p>Description: 当前日期</p>
+     * @return java.lang.String
      */
-    public static String today() {
-        return formatDate(new Date());
-    }
-
-    // ------------------------------------ Format start ----------------------------------------------
-
-    /**
-     * 根据特定格式格式化日期
-     *
-     * @param date   被格式化的日期
-     * @param format 格式
-     * @return 格式化后的字符串
-     */
-    public static String format(Date date, String format) {
-        return new SimpleDateFormat(format).format(date);
+    public static String nowDayStr() {
+        return nowFormatDay(DATE_FORMAT);
     }
 
     /**
-     * 格式 yyyy-MM-dd HH:mm:ss
-     *
-     * @param date 被格式化的日期
-     * @return 格式化后的日期
+     * <p>Title:nowFormatDay</p>
+     * <p>Description: 获取特定格式日期时间字符串</p>
+     * @param pattern 日期格式
+     * @return java.lang.String
      */
-    public static String formatDateTime(Date date) {
-//		return format(d, "yyyy-MM-dd HH:mm:ss");
-        return NORM_DATETIME_FORMAT.format(date);
+    public static String nowFormatDay(String pattern) {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern(pattern));
     }
 
     /**
-     * 格式化为Http的标准日期格式
-     *
-     * @param date 被格式化的日期
-     * @return HTTP标准形式日期字符串
+     * <p>Title:nowTime</p>
+     * <p>Description: 获取当前时间点</p>
+     * @return java.time.LocalTime
      */
-    public static String formatHttpDate(Date date) {
-//		return new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US).format(date);
-        return HTTP_DATETIME_FORMAT.format(date);
+    public static LocalTime nowTime() {
+        return LocalTime.now();
     }
 
     /**
-     * 格式 yyyy-MM-dd
-     *
-     * @param date 被格式化的日期
-     * @return 格式化后的字符串
+     * <p>Title:nowTimeStr</p>
+     * <p>Description: 获取当前时间点字符串</p>
+     * @return java.lang.String
      */
-    public static String formatDate(Date date) {
-//		return format(d, "yyyy-MM-dd");
-        return NORM_DATE_FORMAT.format(date);
-    }
-    // ------------------------------------ Format end ----------------------------------------------
-
-    // ------------------------------------ Parse start ----------------------------------------------
-
-    /**
-     * 将特定格式的日期转换为Date对象
-     *
-     * @param dateString 特定格式的日期
-     * @param format     格式，例如yyyy-MM-dd
-     * @return 日期对象
-     */
-    public static Date parse(String dateString, String format) {
-        try {
-            return (new SimpleDateFormat(format)).parse(dateString);
-        } catch (ParseException e) {
-            log.error("Parse " + dateString + " with format " + format + " error!", e);
-        }
-        return null;
+    public static String nowTimeStr() {
+        return nowFormatTime(SECOND_TIME_FORMAT);
     }
 
     /**
-     * 格式yyyy-MM-dd HH:mm:ss
-     *
-     * @param dateString 标准形式的时间字符串
-     * @return 日期对象
+     * <p>Title:nowFormatTime</p>
+     * <p>Description: 获取当前时间点特定格式字符串</p>
+     * @param pattern 时间格式
+     * @return java.lang.String
      */
-    public static Date parseDateTime(String dateString) {
-//		return parse(s, "yyyy-MM-dd HH:mm:ss");
-        try {
-            return NORM_DATETIME_FORMAT.parse(dateString);
-        } catch (ParseException e) {
-            log.error("Parse " + dateString + " with format " + NORM_DATETIME_FORMAT.toPattern() + " error!", e);
-        }
-        return null;
+    public static String nowFormatTime(String pattern) {
+        return LocalTime.now().format(DateTimeFormatter.ofPattern(pattern));
     }
 
     /**
-     * 格式yyyy-MM-dd
-     *
-     * @param dateString 标准形式的日期字符串
-     * @return 日期对象
+     * <p>Title:nowMilli</p>
+     * <p>Description: 获取当前毫秒数</p>
+     * @return long
      */
-    public static Date parseDate(String dateString) {
-        try {
-            return NORM_DATE_FORMAT.parse(dateString);
-        } catch (ParseException e) {
-            log.error("Parse " + dateString + " with format " + NORM_DATE_PATTERN + " error!", e);
-        }
-        return null;
+    public static long nowMilli() {
+        return LocalDateTime.now().toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
     }
 
     /**
-     * 格式HH:mm:ss
-     *
-     * @param timeString 标准形式的日期字符串
-     * @return 日期对象
+     * <p>Title:toMilli</p>
+     * <p>Description: 日期时间转毫秒数</p>
+     * @param dateTime 日期时间
+     * @return long
      */
-    public static Date parseTime(String timeString) {
-        try {
-            return NORM_TIME_FORMAT.parse(timeString);
-        } catch (ParseException e) {
-            log.error("Parse " + timeString + " with format " + NORM_TIME_PATTERN + " error!", e);
-        }
-        return null;
+    public static long toMilli(LocalDateTime dateTime) {
+        return dateTime.toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
     }
 
     /**
-     * 格式：<br>
-     * 1、yyyy-MM-dd HH:mm:ss<br>
-     * 2、yyyy-MM-dd<br>
-     * 3、HH:mm:ss>
-     *
-     * @param dateStr 日期字符串
-     * @return 日期
+     * <p>Title:toMilli</p>
+     * <p>Description: 日期时间字符串转毫秒数</p>
+     * @param dateTimeStr 日期时间字符串
+     * @return long
      */
-    public static Date parse(String dateStr) {
-        int length = dateStr.length();
-        try {
-            if (length == DateUtil.NORM_DATETIME_PATTERN.length()) {
-                return parseDateTime(dateStr);
-            } else if (length == DateUtil.NORM_DATE_PATTERN.length()) {
-                return parseDate(dateStr);
-            } else if (length == DateUtil.NORM_TIME_PATTERN.length()) {
-                return parseTime(dateStr);
-            }
-        } catch (Exception e) {
-            log.error("Parse " + dateStr + " with format normal error!", e);
-        }
-        return null;
-    }
-    // ------------------------------------ Parse end ----------------------------------------------
-
-    // ------------------------------------ Offset start ----------------------------------------------
-
-    /**
-     * 昨天
-     *
-     * @return 昨天
-     */
-    public static Date yesterday() {
-        return offsiteDate(new Date(), Calendar.DAY_OF_YEAR, -1);
+    public static long toMilli(String dateTimeStr) {
+        return toMilli(dateTimeStr, DATE_SECOND_TIME_FORMAT);
     }
 
     /**
-     * 上周
-     *
-     * @return 上周
+     * <p>Title:toMilli</p>
+     * <p>Description: 特定格式日期时间字符串转毫秒数</p>
+     * @param dateTimeStr 日期时间字符串
+     * @param pattern 日期时间格式
+     * @return long
      */
-    public static Date lastWeek() {
-        return offsiteDate(new Date(), Calendar.WEEK_OF_YEAR, -1);
+    public static long toMilli(String dateTimeStr, String pattern) {
+        LocalDateTime dateTime = str2DateTime(dateTimeStr, pattern);
+        return toMilli(dateTime);
     }
 
     /**
-     * 上个月
-     *
-     * @return 上个月
+     * <p>Title:nowSecond</p>
+     * <p>Description: 当前秒数</p>
+     * @return int
      */
-    public static Date lastMouth() {
-        return offsiteDate(new Date(), Calendar.MONTH, -1);
+    public static int nowSecond() {
+        return (int) (LocalDateTime.now().toInstant(ZoneOffset.ofHours(8)).getEpochSecond());
     }
 
     /**
-     * 获取指定日期偏移指定时间后的时间
-     *
-     * @param date          基准日期
-     * @param calendarField 偏移的粒度大小（小时、天、月等）使用Calendar中的常数
-     * @param offsite       偏移量，正数为向后偏移，负数为向前偏移
-     * @return 偏移后的日期
+     * <p>Title:toSecond</p>
+     * <p>Description: 日期时间字符串转秒数</p>
+     * @param dateTimeStr 日期时间字符串
+     * @return int
      */
-    public static Date offsiteDate(Date date, int calendarField, int offsite) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(calendarField, offsite);
-        return cal.getTime();
-    }
-    // ------------------------------------ Offset end ----------------------------------------------
-
-    /**
-     * 判断两个日期相差的时长<br/>
-     * 返回 minuend - subtrahend 的差
-     *
-     * @param subtrahend 减数日期
-     * @param minuend    被减数日期
-     * @param diffField  相差的选项：相差的天、小时
-     * @return 日期差
-     */
-    public static long diff(Date subtrahend, Date minuend, long diffField) {
-        long diff = minuend.getTime() - subtrahend.getTime();
-        return diff / diffField;
+    public static int toSecond(String dateTimeStr) {
+        return toSecond(dateTimeStr, DATE_SECOND_TIME_FORMAT);
     }
 
     /**
-     * 计时，常用于记录某段代码的执行时间，单位：纳秒
-     *
-     * @param preTime 之前记录的时间
-     * @return 时间差，纳秒
+     * <p>Title:toSecond</p>
+     * <p>Description: 特定格式日期时间字符串转秒数</p>
+     * @param dateTimeStr 日期时间字符串
+     * @param pattern 日期时间格式
+     * @return int
      */
-    public static long spendNt(long preTime) {
-        return System.nanoTime() - preTime;
+    public static int toSecond(String dateTimeStr, String pattern) {
+        LocalDateTime dateTime = str2DateTime(dateTimeStr, pattern);
+        return toSecond(dateTime);
     }
 
     /**
-     * 计时，常用于记录某段代码的执行时间，单位：毫秒
-     *
-     * @param preTime 之前记录的时间
-     * @return 时间差，毫秒
+     * <p>Title:toSecond</p>
+     * <p>Description: 日期时间转秒数</p>
+     * @param dateTime 日期时间
+     * @return int
      */
-    public static long spendMs(long preTime) {
-        return System.currentTimeMillis() - preTime;
+    public static int toSecond(LocalDateTime dateTime) {
+        return (int) dateTime.toInstant(ZoneOffset.ofHours(8)).toEpochMilli();
     }
 
     /**
-     * <p>Title: parse2Int</p>
-     * <p>Description: String时间转int时间(精确到秒)</p>
-     *
-     * @param dateTime
-     * @return
+     * <p>Title:milli2Str</p>
+     * <p>Description: 毫秒数转字符串</p>
+     * @param milli 毫秒数
+     * @return java.lang.String
      */
-    public static int parse2Int(String dateTime) {
-        int intTime = 0;
-        try {
-            Date time = NORM_DATETIME_FORMAT.parse(dateTime);
-            intTime = Integer.valueOf(String.valueOf(time.getTime() / 1000));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return intTime;
+    public static String milli2Str(long milli) {
+        LocalDateTime dateTime = Instant.ofEpochMilli(milli).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
+        return dateTime.format(DateTimeFormatter.ofPattern(DATE_SECOND_TIME_FORMAT));
     }
 
     /**
-     * <p>Title: parse2StrFormat</p>
-     * <p>Description: 将long类型转换为日期格式：yyyy-MM-dd HH:mm:ss</p>
-     *
-     * @param time
-     * @return
+     * <p>Title:milli2Str</p>
+     * <p>Description: 毫秒数转特定格式字符串</p>
+     * @param milli 毫秒数
+     * @param pattern 日期时间格式
+     * @return java.lang.String
      */
-    public static String parse2StrFormat(long time) {
-        return NORM_DATETIME_FORMAT.format(new Date(time * 1000));
+    public static String milli2Str(long milli, String pattern) {
+        LocalDateTime dateTime = Instant.ofEpochMilli(milli).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern));
     }
+
+    /**
+     * <p>Title:second2Str</p>
+     * <p>Description: 秒数转字符串</p>
+     * @param second 秒数
+     * @return java.lang.String
+     */
+    public static String second2Str(int second) {
+        LocalDateTime dateTime = Instant.ofEpochSecond(second).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
+        return dateTime.format(DateTimeFormatter.ofPattern(DATE_SECOND_TIME_FORMAT));
+    }
+
+    /**
+     * <p>Title:second2Str</p>
+     * <p>Description: 秒数转特定格式字符串</p>
+     * @param second 秒数
+     * @param pattern 日期时间格式
+     * @return java.lang.String
+     */
+    public static String second2Str(int second, String pattern) {
+        LocalDateTime dateTime = Instant.ofEpochSecond(second).atZone(ZoneOffset.ofHours(8)).toLocalDateTime();
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    /**
+     * <p>Title:toDateTime</p>
+     * <p>Description: 字符串转LocalDateTime</p>
+     * @param dateTimeStr 日期时间字符串
+     * @param pattern 格式
+     * @return java.time.LocalDateTime
+     */
+    public static LocalDateTime str2DateTime(String dateTimeStr, String pattern) {
+        return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(pattern));
+    }
+
+    /**
+     * <p>Title:dateTime2Str</p>
+     * <p>Description: 字符串转LocalDateTime</p>
+     * @param dateTime 日期时间字符串
+     * @return java.time.LocalDateTime
+     */
+    public static String dateTime2Str(LocalDateTime dateTime) {
+        return dateTime2Str(dateTime, DATE_SECOND_TIME_FORMAT);
+    }
+
+    /**
+     * <p>Title:dateTime2Str</p>
+     * <p>Description: 字符串转LocalDateTime</p>
+     * @param dateTime 日期时间字符串
+     * @param pattern 格式
+     * @return java.time.LocalDateTime
+     */
+    public static String dateTime2Str(LocalDateTime dateTime, String pattern) {
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(nowDay());
+        System.out.println(nowDayStr());
+        System.out.println(nowFormatDay("yyyyMMdd"));
+
+        System.out.println(nowTime());
+        System.out.println(nowTimeStr());
+        System.out.println(nowFormatTime("HHmmss"));
+
+        System.out.println(nowMilli());
+        System.out.println(toMilli("2020-07-13 17:00:01"));
+        System.out.println(toMilli("2020-07-13 17:00:01", DATE_SECOND_TIME_FORMAT));
+
+        System.out.println(nowSecond());
+        System.out.println(toSecond("2020-07-13 17:00:01"));
+        System.out.println(toSecond("2020-07-13 17:00:01", DATE_SECOND_TIME_FORMAT));
+
+        System.out.println(milli2Str(1594631020166L));
+        System.out.println(milli2Str(1594631020166L, DATE_SECOND_TIME_FORMAT));
+        System.out.println(second2Str(1594631020));
+        System.out.println(second2Str(1594631020, DATE_SECOND_TIME_FORMAT));
+
+    }
+
 }

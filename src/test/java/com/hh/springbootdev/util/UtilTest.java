@@ -22,6 +22,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -336,16 +341,16 @@ public class UtilTest {
         int duration = (realEndTime - realStartTime) / 60;
         int state = 3;*/
 
-        int sTime = DateUtil.parse2Int("2018-09-13 09:01:35");
-        int realStartTime = DateUtil.parse2Int("2018-09-13 09:16:35");
-        int realEndTime = DateUtil.parse2Int("2018-09-13 09:35:25");
-        int eTime = DateUtil.parse2Int("2018-09-13 09:35:25");
+        int sTime = DateUtil.toSecond("2018-09-13 09:01:35");
+        int realStartTime = DateUtil.toSecond("2018-09-13 09:16:35");
+        int realEndTime = DateUtil.toSecond("2018-09-13 09:35:25");
+        int eTime = DateUtil.toSecond("2018-09-13 09:35:25");
         int modelGranularity = 60;
         int duration = (realEndTime - realStartTime) / 60;
         int state = 2;
 
         TreeSet<Integer> rtFlowCTimeSet = new TreeSet<>();
-        rtFlowCTimeSet.add(DateUtil.parse2Int("2018-09-13 09:13:00"));
+        rtFlowCTimeSet.add(DateUtil.toSecond("2018-09-13 09:13:00"));
         if (state != 3 || duration >= 30) { // 攻击没有结束 或者 持续时间大于30分钟的事件：需在开始之前补足15分钟
             if (rtFlowCTimeSet.size() == 0) { // 开始前15分钟内没有查到实时流量 -> 复制基线时间片
                 // rtFlowCTimeSet.addAll(blFlowCTimeSet);
@@ -379,7 +384,7 @@ public class UtilTest {
         rtFlowCTimeSet.add(sTime);
         rtFlowCTimeSet.add(eTime);
         System.out.println("********************************");
-        rtFlowCTimeSet.forEach(rtFlowCTime -> System.out.println(DateUtil.parse2StrFormat(rtFlowCTime)));
+        rtFlowCTimeSet.forEach(rtFlowCTime -> System.out.println(DateUtil.second2Str(rtFlowCTime)));
         System.out.println("********************************");
     }
 
@@ -448,12 +453,12 @@ public class UtilTest {
 
     @Test
     public void test24(){
-        int sTime = DateUtil.parse2Int("2018-11-26 13:12:05");
-        int realStartTime = DateUtil.parse2Int("2018-11-26 13:27:05");
-        int realEndTime = DateUtil.parse2Int("2018-11-26 13:35:07");
-        int eTime = DateUtil.parse2Int("2018-11-26 13:50:07");
+        int sTime = DateUtil.toSecond("2018-11-26 13:12:05");
+        int realStartTime = DateUtil.toSecond("2018-11-26 13:27:05");
+        int realEndTime = DateUtil.toSecond("2018-11-26 13:35:07");
+        int eTime = DateUtil.toSecond("2018-11-26 13:50:07");
         Set<Integer> timeSet = assembleTimeSet(sTime, realStartTime, realEndTime, eTime);
-        timeSet.forEach(time -> System.out.println(DateUtil.parse2StrFormat(time)));
+        timeSet.forEach(time -> System.out.println(DateUtil.second2Str(time)));
     }
 
     @Test
