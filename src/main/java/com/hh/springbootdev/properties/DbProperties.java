@@ -3,6 +3,7 @@ package com.hh.springbootdev.properties;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * Desc:
@@ -11,8 +12,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Time: 14:36
  */
 @Data
-@ToString
-@ConfigurationProperties(prefix = "spring.datasource")
+// @Component
+// @ConfigurationProperties(prefix = "spring.datasource")
 public class DbProperties {
 
     private String url;

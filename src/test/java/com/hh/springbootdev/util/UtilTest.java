@@ -2,6 +2,7 @@ package com.hh.springbootdev.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -11,6 +12,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
+import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import sun.net.util.IPAddressUtil;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
  * Time: 21:49
  */
 @RunWith(JUnit4.class)
+@Slf4j
 public class UtilTest {
 
     @Test
@@ -786,5 +789,56 @@ public class UtilTest {
 
         System.out.println(resultList);
     }
+
+    @Test
+    public void test30() {
+        Executor executor = Executors.newFixedThreadPool(10);
+        List<Integer> nodes = Arrays.asList(1, 2, 3, 4, 5, 6);
+        List<String> results = new ArrayList<>();
+        Set<Integer> failResults = new HashSet<>();
+        nodes.forEach(node -> CompletableFuture.supplyAsync(() -> new SSHUtil().excuteCmd(node), executor)
+                .whenComplete((result, exp) -> {
+                    log.info("result -> " + result);
+                    log.info("exception -> " + exp);
+                    if (exp != null || !result.equals("0")) {
+                        failResults.add(node);
+                        result = "1";
+                    }
+                    results.add(result);
+                    if (results.size() == nodes.size()) {
+                        if (failResults.size() > 0) {
+                            log.info(failResults.size() + "个线程" + failResults.toString() + "执行失败....");
+                        } else {
+                            log.info("所有线程执行成功....");
+                        }
+                    }
+                }));
+        try {
+            log.info("主程序继续执行......");
+            Thread.sleep(3 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class SSHUtil {
+
+        public String excuteCmd(Integer node) {
+            try {
+                log.info("node" + node + " 执行");
+                Thread.sleep(2 * 1000);
+                int i = new Random().nextInt(3);
+                if (i == 2) {
+                    int a = 1 / 0;
+                }
+            } catch (InterruptedException e) {
+                // e.printStackTrace();
+                return "1";
+            }
+            return "0";
+        }
+
+    }
+
 
 }

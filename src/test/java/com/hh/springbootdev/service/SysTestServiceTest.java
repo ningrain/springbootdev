@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SysUserServiceTest extends SpringbootdevApplicationTests {
+public class SysTestServiceTest extends SpringbootdevApplicationTests {
 
     @Autowired
     private SysUserService sysUserService;
