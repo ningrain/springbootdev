@@ -73,6 +73,14 @@ public class IPUtil {
         return "success";
     }
 
+    public static boolean isIPv4(String ip) {
+        return ip.matches(IPV4PATTERN);
+    }
+
+    public static boolean isIPv6(String ip) {
+        return ip.matches(IPV6PATTERN);
+    }
+
     /**
      * <p>Title:getIpListBetween2Ip</p>
      * <p>Description: 根据起止ip获取ip集合</p>

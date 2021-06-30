@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-@Component
+// @Component
 public class MsgConsumer {
 
     private final static Logger logger = LoggerFactory.getLogger(MsgConsumer.class);

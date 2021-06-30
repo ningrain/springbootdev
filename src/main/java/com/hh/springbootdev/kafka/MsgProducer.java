@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-@Component
+// @Component
 public class MsgProducer {
 
     private final static Logger logger = LoggerFactory.getLogger(MsgProducer.class);

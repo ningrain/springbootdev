@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  * <p>Description: </p>
  * @author jiangningning
  */
-@Component
+// @Component
 public class StartUp implements CommandLineRunner {
 
     @Autowired

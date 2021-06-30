@@ -2,6 +2,7 @@ package com.hh.springbootdev.util;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * 字节流工具类
@@ -277,18 +278,21 @@ public class ByteUtil {
     }
 
     public static int getInt(byte[] bytes) {
-        int temp = 0;
-        for (int i = bytes.length - 1; i >= 0; i--) {
-            temp |= (bytes[i] & 0xff) << (i * 8);
-        }
-        return temp;
+        int value;
+        value = ((bytes[0] & 0xFF) << 24)
+                | ((bytes[1] & 0xFF) << 16)
+                | ((bytes[2] & 0xFF) << 8)
+                | (bytes[3] & 0xFF);
+        return value;
     }
 
     // *********************************end*********************************************************
 
     public static void main(String[] args) {
-        byte[] bytes = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
-        System.out.println(getLong(bytes));
+        // byte[] bytes = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
+        byte[] bytes = intToBytes(0x05);
+        // byte[] bytes = new byte[]{5, 0, 0, 0};
+        System.out.println(Arrays.toString(bytes));
         System.out.println(getInt(bytes));
     }
 }
